@@ -16,13 +16,14 @@ from scraper import scrape
 from datetime import date
 from cycle import Cycle
 
+import os
+
 GROUP_NO_STUDENTS_MIN = 3
 GROUP_NO_STUDENTS_MAX = 6
 
 # ------ DATABASE CONFIGURATION -------
 # ---------------------------------------------------------------------
-db_string = "postgresql://ckawtmgwbbedeh:9fa105b5e1777f0cd9778e25571aa93741e9b40b75cc517d80eef29523463eb0@ec2-34-" \
-            "203-255-149.compute-1.amazonaws.com:5432/d33o6p8hneg4ca"
+db_string = os.environ.get("DATABASE_URL")
 
 db = create_engine(db_string)
 meta = MetaData()
