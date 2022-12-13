@@ -24,12 +24,16 @@ from userAccount import userAccount
 
 # -----------------------------------------------------------------------
 
-# LOCAL = True
-LOCAL = False
+LOCAL = True
+# LOCAL = False
 NETID = '[netid]'
 if LOCAL:
+    # You may set to your own NETID
     NETID = 'cmdv'
-TESTING = False
+TESTING = True
+# TESTING = False
+LOGIN_DISABLED=True
+# LOGIN_DISABLED=False
 
 # -----------------------------------------------------------------------
 
@@ -37,15 +41,6 @@ login_manager = LoginManager()
 
 app = Flask(__name__, template_folder='./templates')
 
-login_manager.init_app(app)
-
-login_manager.login_view = "/"
-
-app.secret_key = 'super secret key'  # os.environ['SECRET_KEY']
-cas = CASClient()
-
-# ------------------------------------------------------------
-# CONFIGURATION VARIABLES
 
 app.config.update(
     MAIL_USE_TLS=True,
@@ -55,8 +50,15 @@ app.config.update(
     MAIL_SERVER=os.environ.get('MAIL_SERVER'),
     MAIL_USERNAME=os.environ.get('MAIL_USERNAME'),
     MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD'),
+    LOGIN_DISABLED=LOGIN_DISABLED,
 )
 
+login_manager.init_app(app)
+
+login_manager.login_view = "/"
+
+app.secret_key = 'super secret key'  # os.environ['SECRET_KEY']
+cas = CASClient()
 mail = Mail(app)
 
 # ------------------------------------------------------------------------------
