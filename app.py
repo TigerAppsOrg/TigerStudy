@@ -47,27 +47,15 @@ cas = CASClient()
 # ------------------------------------------------------------
 # CONFIGURATION VARIABLES
 
-if LOCAL:
-    app.config.update(
-        MAIL_USE_TLS=True,
-        MAIL_USE_SSL=False,
-        MAIL_SUPPRESS_SEND=False,
-        MAIL_PORT=587,
-        MAIL_SERVER="smtp.office365.com",
-        MAIL_USERNAME="tiger-study@princeton.edu",
-        MAIL_PASSWORD="RoarTogether123!",
-    )
-
-else:
-    app.config.update(
-        MAIL_USE_TLS=True,
-        MAIL_USE_SSL=False,
-        MAIL_SUPPRESS_SEND=False,
-        MAIL_PORT=587,
-        MAIL_SERVER=os.environ['MAIL_SERVER'],
-        MAIL_USERNAME=os.environ['MAIL_USERNAME'],
-        MAIL_PASSWORD=os.environ['MAIL_PASSWORD'],
-    )
+app.config.update(
+    MAIL_USE_TLS=True,
+    MAIL_USE_SSL=False,
+    MAIL_SUPPRESS_SEND=False,
+    MAIL_PORT=os.environ.get('MAIL_PORT'),
+    MAIL_SERVER=os.environ.get('MAIL_SERVER'),
+    MAIL_USERNAME=os.environ.get('MAIL_USERNAME'),
+    MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD'),
+)
 
 mail = Mail(app)
 
