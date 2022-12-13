@@ -60,12 +60,6 @@ app.config.update(
 mail = Mail(app)
 
 # ------------------------------------------------------------------------------
-# SETS UP LOGIN SYSTEM
-if LOCAL:
-    ldapserver = pustatus.ServerConnection("tiger-study", "RoarTogether123!")
-else:
-    ldapserver = pustatus.ServerConnection(os.environ['LDAP_USERNAME'], os.environ['MAIL_PASSWORD'])
-
 
 # returns special, undergraduates or other
 def uservalidation(netid):
@@ -74,13 +68,6 @@ def uservalidation(netid):
         return "special"
     else: 
         return "undergraduates"
-    # undergrad = pustatus.isUndergraduate(ldapserver, netid)
-    # if undergrad:
-    #     return "undergraduates"
-
-    # if isFaculty(netid):
-    #     return "undergraduates"
-    # return "other"
 
 
 # checks that the user's role matches the page type
