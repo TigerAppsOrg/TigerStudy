@@ -24,16 +24,16 @@ from userAccount import userAccount
 
 # -----------------------------------------------------------------------
 
-LOCAL = True
-# LOCAL = False
+# LOCAL = True
+LOCAL = False
 NETID = '[netid]'
 if LOCAL:
     # You may set to your own NETID
     NETID = 'cmdv'
-TESTING = True
-# TESTING = False
-LOGIN_DISABLED=True
-# LOGIN_DISABLED=False
+# TESTING = True
+TESTING = False
+# LOGIN_DISABLED=True
+LOGIN_DISABLED=False
 
 # -----------------------------------------------------------------------
 
