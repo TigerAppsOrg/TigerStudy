@@ -24,14 +24,25 @@ from userAccount import userAccount
 
 # -----------------------------------------------------------------------
 
+
+# Set LOCAL to True to bypass CAS and other authentication checks.
+# Do this for local development.
 # LOCAL = True
 LOCAL = False
+
 NETID = '[netid]'
 if LOCAL:
     # You may set to your own NETID
     NETID = 'cmdv'
+
+# Set TESTING to True so side effects (like sending emails) don't execute.
+# Do this for local development.
 # TESTING = True
 TESTING = False
+
+# Set LOGIN_DISABLED to True to deactivate the flask login plugins
+# e.g. @login_required no longer forces user login.
+# Do this for local development.
 # LOGIN_DISABLED=True
 LOGIN_DISABLED=False
 
