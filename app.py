@@ -82,8 +82,8 @@ def checkuser(role, pageType):
         return False
 
 
-def loginfail():
-    html = render_template('loginfail.html')
+def loginfail(isAdminPage=False):
+    html = render_template('loginfail.html', isAdminPage=isAdminPage)
     response = make_response(html)
     return response
 
@@ -330,7 +330,7 @@ def admin():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)    
 
     html = render_template('admin.html',
                            netid=netid,
@@ -354,7 +354,7 @@ def start_new_semester():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
     
     # sem = request.form.get('sem')
     # year = request.form.get('year')
@@ -386,7 +386,7 @@ def edit_admin():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     admin_user = request.args.get('netid')
     print('admin user ' + str(admin_user))
@@ -440,7 +440,7 @@ def admin_courses():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail()
+            return loginfail(True)
         useraccount = userAccount(netid, role)
         login_user(useraccount)
 
@@ -497,7 +497,7 @@ def edit_course():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     dept = request.args.get('dept')
     classnum = request.args.get('classnum')
@@ -528,7 +528,7 @@ def admin_override():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     override_type = request.form.get('override_type')
     override_netid = request.form.get('override_netid')
@@ -613,7 +613,7 @@ def submit_course_edits():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     dept = request.args.get('dept')
     classnum = request.args.get('classnum')
@@ -653,7 +653,7 @@ def admin_students():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail()
+            return loginfail(True)
         useraccount = userAccount(netid, role)
         login_user(useraccount)
 
@@ -706,7 +706,7 @@ def view_student():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     netid = request.args.get('netid')
     student = getStudentInformation(netid)
@@ -746,7 +746,7 @@ def myGroups(alert='None'):
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
 
     myGroups = []
 
@@ -790,7 +790,7 @@ def getMyGroupInfo():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
 
     groupId = request.args.get('groupId')
     group = getGroupInformation(groupId)
@@ -877,7 +877,7 @@ def leaveGroup():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
 
     groupId = request.args.get('groupId')
     dept = request.args.get('dept')
@@ -906,7 +906,7 @@ def changeGroup():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
 
     groupId = request.args.get('groupId')
     dept = request.args.get('dept')
@@ -933,7 +933,7 @@ def edit_contact():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
     
     fname = request.form.get('fname-input')
     lname = request.form.get('lname-input')
