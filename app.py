@@ -24,12 +24,27 @@ from userAccount import userAccount
 
 # -----------------------------------------------------------------------
 
+
+# Set LOCAL to True to bypass CAS and other authentication checks.
+# Do this for local development.
 # LOCAL = True
 LOCAL = False
+
 NETID = '[netid]'
 if LOCAL:
+    # You may set to your own NETID
     NETID = 'cmdv'
+
+# Set TESTING to True so side effects (like sending emails) don't execute.
+# Do this for local development.
+# TESTING = True
 TESTING = False
+
+# Set LOGIN_DISABLED to True to deactivate the flask login plugins
+# e.g. @login_required no longer forces user login.
+# Do this for local development.
+# LOGIN_DISABLED=True
+LOGIN_DISABLED=False
 
 # -----------------------------------------------------------------------
 
@@ -37,47 +52,27 @@ login_manager = LoginManager()
 
 app = Flask(__name__, template_folder='./templates')
 
+
+app.config.update(
+    MAIL_USE_TLS=True,
+    MAIL_USE_SSL=False,
+    MAIL_SUPPRESS_SEND=False,
+    MAIL_PORT=os.environ.get('MAIL_PORT'),
+    MAIL_SERVER=os.environ.get('MAIL_SERVER'),
+    MAIL_USERNAME=os.environ.get('MAIL_USERNAME'),
+    MAIL_PASSWORD=os.environ.get('MAIL_PASSWORD'),
+    LOGIN_DISABLED=LOGIN_DISABLED,
+)
+
 login_manager.init_app(app)
 
 login_manager.login_view = "/"
 
 app.secret_key = 'super secret key'  # os.environ['SECRET_KEY']
 cas = CASClient()
-
-# ------------------------------------------------------------
-# CONFIGURATION VARIABLES
-
-if LOCAL:
-    app.config.update(
-        MAIL_USE_TLS=True,
-        MAIL_USE_SSL=False,
-        MAIL_SUPPRESS_SEND=False,
-        MAIL_PORT=587,
-        MAIL_SERVER="smtp.office365.com",
-        MAIL_USERNAME="tiger-study@princeton.edu",
-        MAIL_PASSWORD="RoarTogether123!",
-    )
-
-else:
-    app.config.update(
-        MAIL_USE_TLS=True,
-        MAIL_USE_SSL=False,
-        MAIL_SUPPRESS_SEND=False,
-        MAIL_PORT=587,
-        MAIL_SERVER=os.environ['MAIL_SERVER'],
-        MAIL_USERNAME=os.environ['MAIL_USERNAME'],
-        MAIL_PASSWORD=os.environ['MAIL_PASSWORD'],
-    )
-
 mail = Mail(app)
 
 # ------------------------------------------------------------------------------
-# SETS UP LOGIN SYSTEM
-if LOCAL:
-    ldapserver = pustatus.ServerConnection("tiger-study", "RoarTogether123!")
-else:
-    ldapserver = pustatus.ServerConnection(os.environ['LDAP_USERNAME'], os.environ['MAIL_PASSWORD'])
-
 
 # returns special, undergraduates or other
 def uservalidation(netid):
@@ -86,13 +81,6 @@ def uservalidation(netid):
         return "special"
     else: 
         return "undergraduates"
-    # undergrad = pustatus.isUndergraduate(ldapserver, netid)
-    # if undergrad:
-    #     return "undergraduates"
-
-    # if isFaculty(netid):
-    #     return "undergraduates"
-    # return "other"
 
 
 # checks that the user's role matches the page type
@@ -105,8 +93,8 @@ def checkuser(role, pageType):
         return False
 
 
-def loginfail():
-    html = render_template('loginfail.html')
+def loginfail(isAdminPage=False):
+    html = render_template('loginfail.html', isAdminPage=isAdminPage)
     response = make_response(html)
     return response
 
@@ -353,7 +341,7 @@ def admin():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)    
 
     html = render_template('admin.html',
                            netid=netid,
@@ -377,7 +365,7 @@ def start_new_semester():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
     
     # sem = request.form.get('sem')
     # year = request.form.get('year')
@@ -409,7 +397,7 @@ def edit_admin():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     admin_user = request.args.get('netid')
     print('admin user ' + str(admin_user))
@@ -463,7 +451,7 @@ def admin_courses():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail()
+            return loginfail(True)
         useraccount = userAccount(netid, role)
         login_user(useraccount)
 
@@ -520,7 +508,7 @@ def edit_course():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     dept = request.args.get('dept')
     classnum = request.args.get('classnum')
@@ -551,7 +539,7 @@ def admin_override():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     override_type = request.form.get('override_type')
     override_netid = request.form.get('override_netid')
@@ -636,7 +624,7 @@ def submit_course_edits():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     dept = request.args.get('dept')
     classnum = request.args.get('classnum')
@@ -676,7 +664,7 @@ def admin_students():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail()
+            return loginfail(True)
         useraccount = userAccount(netid, role)
         login_user(useraccount)
 
@@ -729,7 +717,7 @@ def view_student():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail(True)
 
     netid = request.args.get('netid')
     student = getStudentInformation(netid)
@@ -769,7 +757,7 @@ def myGroups(alert='None'):
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
 
     myGroups = []
 
@@ -813,7 +801,7 @@ def getMyGroupInfo():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
 
     groupId = request.args.get('groupId')
     group = getGroupInformation(groupId)
@@ -900,7 +888,7 @@ def leaveGroup():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
 
     groupId = request.args.get('groupId')
     dept = request.args.get('dept')
@@ -929,7 +917,7 @@ def changeGroup():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
 
     groupId = request.args.get('groupId')
     dept = request.args.get('dept')
@@ -956,7 +944,7 @@ def edit_contact():
         role = uservalidation(netid)
         check = checkuser(role, pageType)
         if not check:
-            return loginfail(netid)
+            return loginfail()
     
     fname = request.form.get('fname-input')
     lname = request.form.get('lname-input')

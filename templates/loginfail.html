@@ -33,11 +33,18 @@
                   <div class="card-header">
                     Sorry...
                   </div>
-                  <div class="card-body">
-                    We're terribly sorry, but this site is for undergraduates only. Want to learn more? Reach out to
-              the McGraw Center for Teaching and Learning (<a target="_blank" href="mailto:mcgugrad@princeton.edu">mcgugrad@princeton.edu</a>) or to the TigerStudy
-              administrators (<a target="_blank" href="mailto:tiger-study@princeton.edu">tiger-study@princeton.edu</a>).
-                  </div>
+                    
+                  {% if isAdminPage %}
+                    <div class="card-body">
+                     Unauthorized access. This page is for admins only.
+                    </div>
+                  {% else %}
+                    <div class="card-body">
+                      We're terribly sorry, but this site is for undergraduates only. Want to learn more? Reach out to
+                      the McGraw Center for Teaching and Learning (<a target="_blank" href="mailto:mcgugrad@princeton.edu">mcgugrad@princeton.edu</a>) or to the TigerStudy
+                      administrators (<a target="_blank" href="mailto:tiger-study@princeton.edu">tiger-study@princeton.edu</a>).
+                      </div>
+                  {% endif %}
               </div>
           </div>
       </div>
