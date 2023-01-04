@@ -85,6 +85,14 @@ cycle = Table(
     Column("term", String),
 )
 
+emails = Table(
+    "emails",
+    meta,
+    Column("type", String),
+    Column("subject", String),
+    Column("body", String),
+)
+
 
 # ---------------------------------------------------------------------
 # --------------------- DATABASE INTERFACE ----------------------------
