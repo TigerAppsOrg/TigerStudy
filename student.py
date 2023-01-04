@@ -32,8 +32,14 @@ class Student:
         return self._honor_code
 
     def print_student(self):
-        print(str(self._netid) + ' ' + str(self._first_name) + ' ' + str(self._last_name) + ' ' +
-              str(self._phone) + ' ' + str(self._availability))
-
-
-
+        print(
+            str(self._netid)
+            + " "
+            + str(self._first_name)
+            + " "
+            + str(self._last_name)
+            + " "
+            + str(self._phone)
+            + " "
+            + str(self._availability)
+        )

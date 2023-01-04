@@ -12,8 +12,3 @@ class StudyGroup:
 
     def getClassNum(self):
         return self._class_num
-
-
-
-
-
