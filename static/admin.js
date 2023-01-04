@@ -1,1 +1,1 @@
-console.log($("#email-type-selector"));
+console.log($("#email-type-selector").val());

@@ -144,8 +144,8 @@
            {% endif %}
           </div>
           <br>
-          <div class="admin-boxes" >
-            <h5>Edit Email Contents</h5>
+          <div class="admin-boxes email-admin-box">
+            <h5>Edit Email Template</h5>
             <hr>
             <form>
               <div class="form-group">
@@ -155,10 +155,15 @@
                   <option>2</option>
                 </select>
               </div>
-              <!-- <div class="form-group">
-                <label for="exampleFormControlTextarea1">Example textarea</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-              </div> -->
+              <div class="form-group">
+                <label for="email-subject-input">Email Subject</label>
+                <input class="form-control" id="email-subject-input">
+              </div>
+              <div class="form-group">
+                <label for="email-body-input">Email Body</label>
+                <textarea class="form-control" id="email-body-input" rows="15"></textarea>
+              </div>
+              <button type="submit" class="btn">Edit</button>
             </form>
           </div>
         </div>
