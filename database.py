@@ -157,6 +157,14 @@ def getAdmin():
     return admins
 
 
+def getEmailTemplates():
+    conn = db.connect()
+    stmt = emails.select()
+    result = conn.execute(stmt)
+    conn.close()
+    return {e[0]: {"subject": e[1], "body": e[2]} for e in result}
+
+
 # ---------------------------------------------------------------------
 # --- FACULTY ----
 # return true if the relevant netid has faculty access

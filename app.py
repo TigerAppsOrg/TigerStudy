@@ -481,6 +481,21 @@ def edit_admin():
     return response
 
 
+@app.route("/get_email_templates")
+@login_required
+def get_email_templates():
+    netid = NETID
+    if not LOCAL:
+        netid = cas.authenticate()
+        pageType = "special"
+        role = uservalidation(netid)
+        check = checkuser(role, pageType)
+        if not check:
+            return loginfail(True)
+
+    return {"res": getEmailTemplates()}
+
+
 # ------------------------------------------------------------------------------
 # EDIT COURSE INFORMATION AND MANUAL GROUP INTERVENTION
 # ------------------------------------------------------------------------------
