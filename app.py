@@ -513,7 +513,7 @@ def update_email_template():
     body = request.form.get("body")
 
     if not (type_ and subject and body):
-        return {"res": False}
+        return redirect("admin")
 
     print(f"Updating email type: {type_}")
     print(f"Subject: {subject}")
@@ -521,7 +521,7 @@ def update_email_template():
 
     updateEmailTemplate(type_, subject, body)
 
-    return {"res": True}
+    return redirect("admin")
 
 
 # ------------------------------------------------------------------------------
