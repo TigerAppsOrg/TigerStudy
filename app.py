@@ -496,6 +496,34 @@ def get_email_templates():
     return {"res": getEmailTemplates()}
 
 
+@app.route("/update_email_template", methods=["POST"])
+@login_required
+def update_email_template():
+    netid = NETID
+    if not LOCAL:
+        netid = cas.authenticate()
+        pageType = "special"
+        role = uservalidation(netid)
+        check = checkuser(role, pageType)
+        if not check:
+            return loginfail(True)
+
+    type_ = request.form.get("type")
+    subject = request.form.get("subject")
+    body = request.form.get("body")
+
+    if not (type_ and subject and body):
+        return {"res": False}
+
+    print(f"Updating email type: {type_}")
+    print(f"Subject: {subject}")
+    print(f"Body: {body}")
+
+    updateEmailTemplate(type_, subject, body)
+
+    return {"res": True}
+
+
 # ------------------------------------------------------------------------------
 # EDIT COURSE INFORMATION AND MANUAL GROUP INTERVENTION
 # ------------------------------------------------------------------------------

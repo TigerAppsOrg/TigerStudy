@@ -165,6 +165,15 @@ def getEmailTemplates():
     return {e[0]: {"subject": e[1], "body": e[2]} for e in result}
 
 
+def updateEmailTemplate(type_, subject, body):
+    conn = db.connect()
+    stmt = (
+        emails.update().where(emails.c.type == type_).values(subject=subject, body=body)
+    )
+    conn.execute(stmt)
+    conn.close()
+
+
 # ---------------------------------------------------------------------
 # --- FACULTY ----
 # return true if the relevant netid has faculty access
