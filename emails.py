@@ -37,15 +37,13 @@ def courseDeniedEmail(netids, dept, num):
     for netid in netids:
         emails.append(str(netid) + "@princeton.edu")
 
+    subject = subject.replace("$COURSE$", str(dept) + str(num))
+
     msg = Message(
-        "Course Status Update for " + str(dept) + str(num),
+        subject=subject,
+        body=body,
         sender="tiger-study@princeton.edu",
         recipients=emails,
-    )
-
-    msg.body = (
-        "Dear Student, \n\n We are so sorry, but your instructor has chosen to opt-out of using TigerStudy for this "
-        "course. As a result, we can't match you into any groups.\n\nKind regards, \n\nYour TigerStudy Friends "
     )
 
     return msg
@@ -212,4 +210,5 @@ def getCourseName(groupid):
 
 if __name__ == "__main__":
     # print(fetchEmailTemplate("Waiting Approval Email"))
-    print(newGroupWelcomeEmail("tl5559", 581))
+    # print(newGroupWelcomeEmail("tl5559", 581))
+    print(courseDeniedEmail([], "ECO", 100))
