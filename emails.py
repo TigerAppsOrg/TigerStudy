@@ -193,3 +193,17 @@ def waitingApprovalEmail(dept, num, netid):
     )
 
     return [msg, msg_admins]
+
+
+def fetchEmailTemplate(type_):
+    conn = db.connect()
+    stmt = emails.select().where(emails.c.type == type_)
+    result = conn.execute(stmt)
+    conn.close()
+    template = list(result)[0]
+    _, subject, body = template
+    return subject, body
+
+
+if __name__ == "__main__":
+    print(fetchEmailTemplate("New Group Welcome Email"))
