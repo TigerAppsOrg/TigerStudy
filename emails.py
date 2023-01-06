@@ -81,8 +81,6 @@ def courseApprovedEmail(groups, dept, num):
 def newStudentWelcomeEmail(netid, students, groupid):
     subject, body = fetchEmailTemplate("New Student Welcome Email")
 
-    print("SENDING EMAIL IN NEW STUDENT WELCOME EMAIL")
-    print(students)
     student_info = getStudentInformation(students[0])
     if student_info.getFirstName() == "":
         student_name = student_info.getNetid()
@@ -142,11 +140,6 @@ def welcomeEmail(netid):
 
 def waitingApprovalEmail(dept, num, netid):
     subject, body = fetchEmailTemplate("Waiting Approval Email")
-
-    print("pending approval")
-    print(dept)
-    print(num)
-    print(netid)
 
     subject = subject.replace("$COURSE$", str(dept) + str(num))
 
