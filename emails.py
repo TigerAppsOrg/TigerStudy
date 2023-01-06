@@ -65,19 +65,12 @@ def courseApprovedEmail(groups, dept, num):
             contact_summary += str(s.getNetid()) + "@princeton.edu\n"
 
         msg = Message(
-            dept + " " + num + " has been approved on TigerStudy",
+            subject=subject.replace("$COURSE$", str(dept) + str(num)),
+            body=body.replace("$COURSE$", str(dept) + str(num)).replace(
+                "$CONTACT_INFO$", contact_summary
+            ),
             sender="tiger-study@princeton.edu",
             recipients=email,
-        )
-        msg.body = (
-            "Hello TigerStudy Friends, \n\nJust wanted to let you know that "
-            + str(dept)
-            + " "
-            + str(num)
-            + " has been approved on TigerStudy. \n\nBelow is the "
-            + "contact information of everyone in your group - and we will continue to reach out to you if others "
-            "join "
-            "in the future. Have fun!\n\n" + str(contact_summary)
         )
 
     return msg
@@ -211,4 +204,5 @@ def getCourseName(groupid):
 if __name__ == "__main__":
     # print(fetchEmailTemplate("Waiting Approval Email"))
     # print(newGroupWelcomeEmail("tl5559", 581))
-    print(courseDeniedEmail([], "ECO", 100))
+    # print(courseDeniedEmail([], "ECO", 100))
+    print(courseApprovedEmail([["ntyp"]], "ECO", 100))
