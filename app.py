@@ -167,7 +167,9 @@ def _switchStudentInClass(netid, class_dept, class_num):
 
     if endorsement_status == 1:
         if not TESTING:
-            mail.send(waitingApprovalEmail(class_dept, class_num, netid))
+            emails = waitingApprovalEmail(class_dept, class_num, netid)
+            mail.send(emails[0])
+            mail.send(emails[1])
         return groupid
 
     students_in_group = getStudentsInGroup(groupid)
@@ -672,7 +674,9 @@ def admin_override():
 
         if endorsement_status == 1:
             if not TESTING:
-                mail.send(waitingApprovalEmail(dept, classnum, override_netid))
+                emails = waitingApprovalEmail(dept, classnum, override_netid)
+                mail.send(emails[0])
+                mail.send(emails[1])
 
         students_in_group = getStudentsInGroup(new_groupid)
         if len(students_in_group) <= 1:
@@ -695,7 +699,9 @@ def admin_override():
 
         if endorsement_status == 1:
             if not TESTING:
-                mail.send(waitingApprovalEmail(dept, classnum, override_netid))
+                emails = waitingApprovalEmail(dept, classnum, override_netid)
+                mail.send(emails[0])
+                mail.send(emails[1])
 
         students_in_group = getStudentsInGroup(new_groupid)
         if len(students_in_group) <= 1:
