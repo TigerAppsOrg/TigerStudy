@@ -91,7 +91,9 @@ def newStudentWelcomeEmail(netid, students, groupid):
             str(student_info.getFirstName()) + " " + str(student_info.getLastName())
         )
     netid = student_info.getNetid()
-    group_information = getGroupInformation(groupid)
+
+    course_name = getCourseName(groupid)
+
     email = [netid + "@princeton.edu"]
     contact_summary = ""
     for std in students:
@@ -107,25 +109,19 @@ def newStudentWelcomeEmail(netid, students, groupid):
         name_msg = (
             str(student_info.getFirstName()) + " " + str(student_info.getLastName())
         )
+
+    subject = subject.replace("$COURSE$", course_name).replace("$JOINEE$", name_msg)
+    body = (
+        body.replace("$COURSE$", course_name)
+        .replace("$JOINEE$", student_name)
+        .replace("$CONTACT_INFO$", contact_summary)
+    )
+
     msg = Message(
-        name_msg
-        + " has joined your group for "
-        + str(group_information.getClassDept())
-        + str(group_information.getClassNum()),
+        subject=subject,
+        body=body,
         sender="tiger-study@princeton.edu",
         recipients=email,
-    )
-    msg.body = (
-        "Hello TigerStudy Friends, \n\nJust wanted to let you know that "
-        + str(student_name)
-        + " has joined your "
-        "study group for "
-        + str(group_information.getClassDept())
-        + str(group_information.getClassNum())
-        + ". \n\nBelow is the "
-        + "contact information of everyone in your group - and we will continue to reach out to you if others "
-        "join "
-        "in the future. Have fun!\n\n" + str(contact_summary)
     )
 
     return msg
@@ -205,4 +201,5 @@ if __name__ == "__main__":
     # print(fetchEmailTemplate("Waiting Approval Email"))
     # print(newGroupWelcomeEmail("tl5559", 581))
     # print(courseDeniedEmail([], "ECO", 100))
-    print(courseApprovedEmail([["ntyp"]], "ECO", 100))
+    # print(courseApprovedEmail([["ntyp"]], "ECO", 100))
+    print(newStudentWelcomeEmail("tl5559", ["tl5559", "ntyp"], 581))
