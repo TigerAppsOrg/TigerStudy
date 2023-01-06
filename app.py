@@ -762,7 +762,9 @@ def submit_course_edits():
                 mail.send(courseDeniedEmail(action[1], dept, classnum))
         if action[0] == 2:
             if not TESTING:
-                mail.send(courseApprovedEmail(action[1], dept, classnum))
+                emails = courseApprovedEmail(action[1], dept, classnum)
+                for email in emails:
+                    mail.send(email)
 
     html = render_template(
         "admin_courses.html",

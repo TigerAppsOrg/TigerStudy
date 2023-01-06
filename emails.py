@@ -52,6 +52,7 @@ def courseDeniedEmail(netids, dept, num):
 def courseApprovedEmail(groups, dept, num):
     subject, body = fetchEmailTemplate("Course Approved Email")
 
+    msgs = []
     for students in groups:
         contact_summary = ""
         email = []
@@ -73,7 +74,9 @@ def courseApprovedEmail(groups, dept, num):
             recipients=email,
         )
 
-    return msg
+        msgs.append(msg)
+
+    return msgs
 
 
 # -----------------------------------------------------------------------
