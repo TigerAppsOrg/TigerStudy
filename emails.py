@@ -147,18 +147,22 @@ def waitingApprovalEmail(dept, num, netid):
     print(dept)
     print(num)
     print(netid)
+
+    subject = subject.replace("$COURSE$", str(dept) + str(num))
+
     email = [str(netid) + "@princeton.edu"]
     msg = Message(
-        "Thank you for signing up for " + str(dept) + str(num) + "!",
+        subject=subject,
+        body=body,
         sender="tiger-study@princeton.edu",
         recipients=email,
     )
-    msg.body = (
-        "This class is still pending approval from your professor. We will reach out to you as soon as we "
-        "hear back from the course instructors. We appreciate your patience. "
-    )
 
-    email_admins = ["gawonj@princeton.edu", "iokkinga@princeton.edu"]
+    email_admins = [
+        "gawonj@princeton.edu",
+        "iokkinga@princeton.edu",
+        "nvoge@princeton.edu",
+    ]
     msg_admins = Message(
         "Someone has requested to join TigerStudy for " + str(dept) + str(num),
         sender="tiger-study@princeton.edu",
