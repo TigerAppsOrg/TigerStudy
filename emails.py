@@ -134,14 +134,7 @@ def welcomeEmail(netid):
 
     email = [str(netid) + "@princeton.edu"]
     msg = Message(
-        "Welcome to TigerStudy!", sender="tiger-study@princeton.edu", recipients=email
-    )
-    msg.body = (
-        "Welcome to TigerStudy! \n\nWe're so glad that you've joined our community, and we wanted to reach out "
-        " and say hello.\n\nIf you have any feedback, questions or concerns, feel free to respond to this email or "
-        "reach out to our two site "
-        "administrators Caroline di Vittorio '22 (cmdv@princeton.edu) and Kasey McFadden '22 "
-        "(kaseym@princeton.edu).\n\nKind regards,\n\nThe TigerStudy Community"
+        subject=subject, body=body, sender="tiger-study@princeton.edu", recipients=email
     )
 
     return msg
@@ -202,4 +195,5 @@ if __name__ == "__main__":
     # print(newGroupWelcomeEmail("tl5559", 581))
     # print(courseDeniedEmail([], "ECO", 100))
     # print(courseApprovedEmail([["ntyp"]], "ECO", 100))
-    print(newStudentWelcomeEmail("tl5559", ["tl5559", "ntyp"], 581))
+    # print(newStudentWelcomeEmail("tl5559", ["tl5559", "ntyp"], 581))
+    print(welcomeEmail("ntyp"))
