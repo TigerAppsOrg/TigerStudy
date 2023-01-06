@@ -907,7 +907,7 @@ if __name__ == "__main__":
     #     ),
     # )
     # statement = emails.insert().values(
-    #     type="New Student Welcome Email",
+    #     type="First Login Welcome Email",
     #     subject="Welcome to TigerStudy!",
     #     body=(
     #         "Welcome to TigerStudy!\n\n"
