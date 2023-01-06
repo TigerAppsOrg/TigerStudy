@@ -15,28 +15,16 @@ def newGroupWelcomeEmail(netid, groupid):
     first_name = (
         netid if student_info.getFirstName() == "" else student_info.getFirstName()
     )
+    course_name = getCourseName(groupid)
 
-    group_information = getGroupInformation(groupid)
+    subject = subject.replace("$COURSE$", course_name)
+    body = body.replace("$RECIPIENT$", str(first_name)).replace("$COURSE$", course_name)
+
     msg = Message(
-        "Welcome to TigerStudy for "
-        + str(group_information.getClassDept())
-        + str(group_information.getClassNum()),
+        subject=subject,
+        body=body,
         sender="tiger-study@princeton.edu",
         recipients=[netid + "@princeton.edu"],
-    )
-
-    intro = (
-        "Dear "
-        + str(first_name)
-        + ", \n\nThank you for joining TigerStudy for "
-        + str(group_information.getClassDept())
-        + str(group_information.getClassNum())
-    )
-    msg.body = (
-        intro
-        + ". You're the first member of your group! We will reach out to you very soon once we've "
-        "matched you with other students. \n\nIn the meantime, for any questions or inquiries, feel "
-        "free to respond to this email.\n\nKind regards,\n\nYour TigerStudy Friends "
     )
 
     return msg
@@ -223,4 +211,5 @@ def getCourseName(groupid):
 
 
 if __name__ == "__main__":
-    print(fetchEmailTemplate("Waiting Approval Email"))
+    # print(fetchEmailTemplate("Waiting Approval Email"))
+    print(newGroupWelcomeEmail("tl5559", 581))
