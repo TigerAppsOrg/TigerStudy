@@ -217,5 +217,10 @@ def fetchEmailTemplate(type_):
     return subject, body
 
 
+def getCourseName(groupid):
+    group_information = getGroupInformation(groupid)
+    return group_information.getClassDept() + group_information.getClassNum()
+
+
 if __name__ == "__main__":
     print(fetchEmailTemplate("Waiting Approval Email"))
