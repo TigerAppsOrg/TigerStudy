@@ -9,6 +9,8 @@ from database import *
 # sends email to welcome new student to a new group when they are the first
 # student in that group
 def newGroupWelcomeEmail(netid, groupid):
+    subject, body = fetchEmailTemplate("New Group Welcome Email")
+
     student_info = getStudentInformation(netid)
     first_name = (
         netid if student_info.getFirstName() == "" else student_info.getFirstName()
@@ -41,6 +43,8 @@ def newGroupWelcomeEmail(netid, groupid):
 
 
 def courseDeniedEmail(netids, dept, num):
+    subject, body = fetchEmailTemplate("Course Denied Email")
+
     emails = []
     for netid in netids:
         emails.append(str(netid) + "@princeton.edu")
@@ -60,6 +64,8 @@ def courseDeniedEmail(netids, dept, num):
 
 
 def courseApprovedEmail(groups, dept, num):
+    subject, body = fetchEmailTemplate("Course Approved Email")
+
     for students in groups:
         contact_summary = ""
         email = []
@@ -94,6 +100,8 @@ def courseApprovedEmail(groups, dept, num):
 # -----------------------------------------------------------------------
 # sends email welcome a new student to an already existing study group
 def newStudentWelcomeEmail(netid, students, groupid):
+    subject, body = fetchEmailTemplate("New Student Welcome Email")
+
     print("SENDING EMAIL IN NEW STUDENT WELCOME EMAIL")
     print(students)
     student_info = getStudentInformation(students[0])
@@ -147,6 +155,8 @@ def newStudentWelcomeEmail(netid, students, groupid):
 # -----------------------------------------------------------------------
 # sends welcome email for first login of new student
 def welcomeEmail(netid):
+    subject, body = fetchEmailTemplate("First Login Welcome Email")
+
     email = [str(netid) + "@princeton.edu"]
     msg = Message(
         "Welcome to TigerStudy!", sender="tiger-study@princeton.edu", recipients=email
@@ -163,6 +173,8 @@ def welcomeEmail(netid):
 
 
 def waitingApprovalEmail(dept, num, netid):
+    subject, body = fetchEmailTemplate("Waiting Approval Email")
+
     print("pending approval")
     print(dept)
     print(num)
@@ -206,4 +218,4 @@ def fetchEmailTemplate(type_):
 
 
 if __name__ == "__main__":
-    print(fetchEmailTemplate("New Group Welcome Email"))
+    print(fetchEmailTemplate("Waiting Approval Email"))
