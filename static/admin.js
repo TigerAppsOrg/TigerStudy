@@ -3,12 +3,16 @@ setupEmailTemplateForm = () => {
     "You may use *only* the following placeholder(s): ";
   NO_PLACEHOLDERS_MESSAGE = "N/A. Do not use any placeholders.";
   COURSE_PLACEHOLDER_MESSAGE = "$COURSE$ for the course name.";
+  CONTACT_INFO_PLACEHOLDER_MESSAGE =
+    "$CONTACT_INFO$ for the group's contact summary.";
+  RECIPIENT_PLACEHOLDER_MESSAGE = "$RECIPIENT for the student's name.";
+  JOINEE_PLACEHOLDER_MESSAGE =
+    "$JOINEE$ for the name of the student who's joining the group.";
+
   PLACEHOLDERS = {
     "Course Approved Email": {
       subject: COURSE_PLACEHOLDER_MESSAGE,
-      body:
-        COURSE_PLACEHOLDER_MESSAGE +
-        " $CONTACT_INFO$ for the group's contact summary.",
+      body: COURSE_PLACEHOLDER_MESSAGE + " " + CONTACT_INFO_PLACEHOLDER_MESSAGE,
     },
     "Course Denied Email": {
       subject: COURSE_PLACEHOLDER_MESSAGE,
@@ -20,15 +24,11 @@ setupEmailTemplateForm = () => {
     },
     "New Group Welcome Email": {
       subject: COURSE_PLACEHOLDER_MESSAGE,
-      body: COURSE_PLACEHOLDER_MESSAGE + " $RECIPIENT for the student's name.",
+      body: COURSE_PLACEHOLDER_MESSAGE + " " + RECIPIENT_PLACEHOLDER_MESSAGE,
     },
     "New Student Welcome Email": {
-      subject:
-        COURSE_PLACEHOLDER_MESSAGE +
-        " $JOINEE$ for the name of the student who's joining the group.",
-      body:
-        COURSE_PLACEHOLDER_MESSAGE +
-        " $JOINEE$ for the name of the student who's joining the group.",
+      subject: COURSE_PLACEHOLDER_MESSAGE + " " + JOINEE_PLACEHOLDER_MESSAGE,
+      body: COURSE_PLACEHOLDER_MESSAGE + " " + JOINEE_PLACEHOLDER_MESSAGE,
     },
     "Waiting Approval Email": {
       subject: COURSE_PLACEHOLDER_MESSAGE,
