@@ -1,39 +1,44 @@
 setupEmailTemplateForm = () => {
-  PLACEHOLDERS_INSTRUCTIONS_PREFIX =
-    "You may use *only* the following placeholder(s): ";
-  NO_PLACEHOLDERS_MESSAGE = "N/A. Do not use any placeholders.";
-  COURSE_PLACEHOLDER_MESSAGE = "$COURSE$ for the course name.";
-  CONTACT_INFO_PLACEHOLDER_MESSAGE =
-    "$CONTACT_INFO$ for the group's contact summary.";
-  RECIPIENT_PLACEHOLDER_MESSAGE = "$RECIPIENT for the student's name.";
-  JOINEE_PLACEHOLDER_MESSAGE =
-    "$JOINEE$ for the name of the student who's joining the group.";
+  getPlaceholderMessage = (type) => {
+    PLACEHOLDERS_INSTRUCTIONS_PREFIX =
+      "You may use *only* the following placeholder(s): ";
+    NO_PLACEHOLDERS_MESSAGE = "N/A. Do not use any placeholders.";
+    COURSE_PLACEHOLDER_MESSAGE = "$COURSE$ for the course name.";
+    CONTACT_INFO_PLACEHOLDER_MESSAGE =
+      "$CONTACT_INFO$ for the group's contact summary.";
+    RECIPIENT_PLACEHOLDER_MESSAGE = "$RECIPIENT for the student's name.";
+    JOINEE_PLACEHOLDER_MESSAGE =
+      "$JOINEE$ for the name of the student who's joining the group.";
 
-  PLACEHOLDERS = {
-    "Course Approved Email": {
-      subject: COURSE_PLACEHOLDER_MESSAGE,
-      body: COURSE_PLACEHOLDER_MESSAGE + " " + CONTACT_INFO_PLACEHOLDER_MESSAGE,
-    },
-    "Course Denied Email": {
-      subject: COURSE_PLACEHOLDER_MESSAGE,
-      body: NO_PLACEHOLDERS_MESSAGE,
-    },
-    "First Login Welcome Email": {
-      subject: NO_PLACEHOLDERS_MESSAGE,
-      body: NO_PLACEHOLDERS_MESSAGE,
-    },
-    "New Group Welcome Email": {
-      subject: COURSE_PLACEHOLDER_MESSAGE,
-      body: COURSE_PLACEHOLDER_MESSAGE + " " + RECIPIENT_PLACEHOLDER_MESSAGE,
-    },
-    "New Student Welcome Email": {
-      subject: COURSE_PLACEHOLDER_MESSAGE + " " + JOINEE_PLACEHOLDER_MESSAGE,
-      body: COURSE_PLACEHOLDER_MESSAGE + " " + JOINEE_PLACEHOLDER_MESSAGE,
-    },
-    "Waiting Approval Email": {
-      subject: COURSE_PLACEHOLDER_MESSAGE,
-      body: NO_PLACEHOLDERS_MESSAGE,
-    },
+    PLACEHOLDERS = {
+      "Course Approved Email": {
+        subject: COURSE_PLACEHOLDER_MESSAGE,
+        body:
+          COURSE_PLACEHOLDER_MESSAGE + " " + CONTACT_INFO_PLACEHOLDER_MESSAGE,
+      },
+      "Course Denied Email": {
+        subject: COURSE_PLACEHOLDER_MESSAGE,
+        body: NO_PLACEHOLDERS_MESSAGE,
+      },
+      "First Login Welcome Email": {
+        subject: NO_PLACEHOLDERS_MESSAGE,
+        body: NO_PLACEHOLDERS_MESSAGE,
+      },
+      "New Group Welcome Email": {
+        subject: COURSE_PLACEHOLDER_MESSAGE,
+        body: COURSE_PLACEHOLDER_MESSAGE + " " + RECIPIENT_PLACEHOLDER_MESSAGE,
+      },
+      "New Student Welcome Email": {
+        subject: COURSE_PLACEHOLDER_MESSAGE + " " + JOINEE_PLACEHOLDER_MESSAGE,
+        body: COURSE_PLACEHOLDER_MESSAGE + " " + JOINEE_PLACEHOLDER_MESSAGE,
+      },
+      "Waiting Approval Email": {
+        subject: COURSE_PLACEHOLDER_MESSAGE,
+        body: NO_PLACEHOLDERS_MESSAGE,
+      },
+    };
+
+    return PLACEHOLDERS[type];
   };
 
   EMAIL_TYPE_SELECTOR = $("#email-type-selector");
@@ -47,10 +52,10 @@ setupEmailTemplateForm = () => {
     EMAIL_SUBJECT_INPUT.val(subject);
     EMAIL_BODY_INPUT.val(body);
     EMAIL_SUBJECT_HELP.html(
-      PLACEHOLDERS_INSTRUCTIONS_PREFIX + PLACEHOLDERS[newType].subject
+      PLACEHOLDERS_INSTRUCTIONS_PREFIX + getPlaceholderMessage(newType).subject
     );
     EMAIL_BODY_HELP.html(
-      PLACEHOLDERS_INSTRUCTIONS_PREFIX + PLACEHOLDERS[newType].body
+      PLACEHOLDERS_INSTRUCTIONS_PREFIX + getPlaceholderMessage(newType).body
     );
   };
 
