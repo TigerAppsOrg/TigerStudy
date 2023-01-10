@@ -1,7 +1,5 @@
-setupEmailTemplateForm = () => {
-  getPlaceholderMessage = (type) => {
-    PLACEHOLDERS_INSTRUCTIONS_PREFIX =
-      "You may use *only* the following placeholder(s): ";
+emailTemplateFormHelpers = {
+  getPlaceholderMessage: (type) => {
     NO_PLACEHOLDERS_MESSAGE = "N/A. Do not use any placeholders.";
     COURSE_PLACEHOLDER_MESSAGE = "$COURSE$ for the course name.";
     CONTACT_INFO_PLACEHOLDER_MESSAGE =
@@ -39,9 +37,11 @@ setupEmailTemplateForm = () => {
     };
 
     return PLACEHOLDERS[type];
-  };
+  },
+  updateEmailTemplateForm: (data, newType) => {
+    PLACEHOLDERS_INSTRUCTIONS_PREFIX =
+      "You may use *only* the following placeholder(s): ";
 
-  updateEmailTemplateForm = (data, newType) => {
     EMAIL_SUBJECT_INPUT = $("#email-subject-input");
     EMAIL_BODY_INPUT = $("#email-body-input");
     EMAIL_SUBJECT_HELP = $("#email-subject-help");
@@ -51,13 +51,17 @@ setupEmailTemplateForm = () => {
     EMAIL_SUBJECT_INPUT.val(subject);
     EMAIL_BODY_INPUT.val(body);
     EMAIL_SUBJECT_HELP.html(
-      PLACEHOLDERS_INSTRUCTIONS_PREFIX + getPlaceholderMessage(newType).subject
+      PLACEHOLDERS_INSTRUCTIONS_PREFIX +
+        emailTemplateFormHelpers.getPlaceholderMessage(newType).subject
     );
     EMAIL_BODY_HELP.html(
-      PLACEHOLDERS_INSTRUCTIONS_PREFIX + getPlaceholderMessage(newType).body
+      PLACEHOLDERS_INSTRUCTIONS_PREFIX +
+        emailTemplateFormHelpers.getPlaceholderMessage(newType).body
     );
-  };
+  },
+};
 
+setupEmailTemplateForm = () => {
   EMAIL_TYPE_SELECTOR = $("#email-type-selector");
   $.get("get_email_templates", (res) => {
     data = res.res;
@@ -66,13 +70,13 @@ setupEmailTemplateForm = () => {
     types.forEach((type) => {
       typeSelector.append(`<option value="${type}">${type}</option>`);
     });
-    updateEmailTemplateForm(data, types[0]);
+    emailTemplateFormHelpers.updateEmailTemplateForm(data, types[0]);
     $("#email-submit").prop("disabled", false);
   }).done((res) => {
     data = res.res;
     EMAIL_TYPE_SELECTOR.change(() => {
       newType = EMAIL_TYPE_SELECTOR.val();
-      updateEmailTemplateForm(data, newType);
+      emailTemplateFormHelpers.updateEmailTemplateForm(data, newType);
     });
   });
 };
