@@ -41,13 +41,12 @@ setupEmailTemplateForm = () => {
     return PLACEHOLDERS[type];
   };
 
-  EMAIL_TYPE_SELECTOR = $("#email-type-selector");
-  EMAIL_SUBJECT_INPUT = $("#email-subject-input");
-  EMAIL_BODY_INPUT = $("#email-body-input");
-  EMAIL_SUBJECT_HELP = $("#email-subject-help");
-  EMAIL_BODY_HELP = $("#email-body-help");
-
   updateEmailTemplateForm = (data, newType) => {
+    EMAIL_SUBJECT_INPUT = $("#email-subject-input");
+    EMAIL_BODY_INPUT = $("#email-body-input");
+    EMAIL_SUBJECT_HELP = $("#email-subject-help");
+    EMAIL_BODY_HELP = $("#email-body-help");
+
     ({ body, subject } = data[newType]);
     EMAIL_SUBJECT_INPUT.val(subject);
     EMAIL_BODY_INPUT.val(body);
@@ -59,6 +58,7 @@ setupEmailTemplateForm = () => {
     );
   };
 
+  EMAIL_TYPE_SELECTOR = $("#email-type-selector");
   $.get("get_email_templates", (res) => {
     data = res.res;
     types = Object.keys(data);
