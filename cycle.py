@@ -25,13 +25,10 @@ class Cycle:
         year = int(diff / 3) + 2021
         sem = diff % 3
         if sem == 0:
-            sem_name = 'Spring '
+            sem_name = "Spring "
         elif sem == 1:
-            sem_name = 'Summer '
+            sem_name = "Summer "
         elif sem == 2:
-            sem_name = 'Fall '
-        
+            sem_name = "Fall "
+
         return sem_name + str(year)
-
-   
-

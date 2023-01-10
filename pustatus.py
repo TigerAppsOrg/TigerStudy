@@ -14,14 +14,16 @@ class ServerConnection:
 # Netid netid whose attribute att you want to check If the uid has the att
 # queried, serversearch will return True, otherwise False
 def __serversearch(serverconnection, netid, att):
-    username = serverconnection.username;
-    password = serverconnection.password;
-    server = ldap3.Server('ldap.princeton.edu', 636, use_ssl=True)
-    connect = ldap3.Connection(server, "uid=" + username +
-                               ",o=princeton university,c=us", password)
+    username = serverconnection.username
+    password = serverconnection.password
+    server = ldap3.Server("ldap.princeton.edu", 636, use_ssl=True)
+    connect = ldap3.Connection(
+        server, "uid=" + username + ",o=princeton university,c=us", password
+    )
     connect.bind()
-    result = connect.search("o=princeton university,c=us",
-                            "(&(uid=" + netid + ")(pustatus=" + att + "))")
+    result = connect.search(
+        "o=princeton university,c=us", "(&(uid=" + netid + ")(pustatus=" + att + "))"
+    )
     return result
 
 
