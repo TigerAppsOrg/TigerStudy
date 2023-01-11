@@ -141,7 +141,7 @@ def getAdmin():
 # --- METRICS ----
 
 def getMetrics():
-    all_group_info, all_group_assignment = _getGroupData()
+    all_classes, all_group_info, all_group_assignment = _getGroupData()
 
     groups_by_id = {} # key is groupid, value is list of netids
     for row in all_group_assignment:
@@ -169,7 +169,19 @@ def getMetrics():
     """ 
     groups_by_dept = {}
 
+    # every class should have an entry, even if it has no groups
+    for row in all_classes:
+        course_row = Course(row)
+        dept = course_row.getDept()
+        num = course_row.getNum()
+
+        if dept not in groups_by_dept:
+            groups_by_dept[dept] = {}
+
+        if num not in groups_by_dept[dept]:
+            groups_by_dept[dept][num] = {}
     """
+
     groups_by_netid
     {
         netid: [(dept + classnum, groupid)]
@@ -204,6 +216,9 @@ def getMetrics():
 
 def _getGroupData():
     conn = db.connect()
+    stmt = classes.select()
+    all_classes = conn.execute(stmt)
+
     stmt = group_info.select()
     all_group_info = conn.execute(stmt)
 
@@ -211,7 +226,7 @@ def _getGroupData():
     all_group_assignment = conn.execute(stmt)
     conn.close()
 
-    return all_group_info, all_group_assignment
+    return all_classes, all_group_info, all_group_assignment
 
 
 # ---------------------------------------------------------------------
@@ -715,7 +730,7 @@ def reset_classes(netid):
 # ---------------------------------------------------------------------
 if __name__ == '__main__':
     print('database.py')
-    
+
     groups_by_dept, groups_by_netid = getMetrics()
     print("\nGroups by Dept")
     print(groups_by_dept)
