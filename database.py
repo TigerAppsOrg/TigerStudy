@@ -243,6 +243,23 @@ def getMetrics():
                 groups_by_netid[netid] = []
             groups_by_netid[netid].append((dept + num, group_id))
 
+        
+    for dept in groups_by_dept:
+        for num in groups_by_dept[dept]:
+            students_set = set()
+
+            # number of groups
+            dept_course_data[dept]['courses'][num]['num_groups'] = len(groups_by_dept[dept][num])
+
+            for group_id in groups_by_dept[dept][num]:
+                students_set.update(set(groups_by_dept[dept][num][group_id]))
+
+            # number of unique students
+            dept_course_data[dept]['courses'][num]['num_unique_students'] = len(students_set)
+            
+            
+
+
     # sort by keys in alphabetical order
     groups_by_dept = dict(sorted(groups_by_dept.items()))
     groups_by_netid = dict(sorted(groups_by_netid.items()))
