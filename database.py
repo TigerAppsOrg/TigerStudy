@@ -148,10 +148,50 @@ def getMetrics():
     all_group_assignment = conn.execute(stmt)
     conn.close()
 
-    print("Group Info")
-    print(list(all_group_info))
-    print("Group Assignment")
-    print(list(all_group_assignment))
+    groups_by_id = {} # key is groupid, value is list of netids
+    for row in all_group_assignment:
+        assignment_row = GroupAssignment(row)
+        group_id = str(assignment_row.getGroupId())
+        net_id = assignment_row.getNetid()
+
+        if group_id not in groups_by_id:
+            groups_by_id[group_id] = []
+        
+        groups_by_id[group_id].append(net_id)
+
+
+    """
+    {
+        dept: {
+            classnum: {
+                groupid: [netid1, netid2, ...]
+            },
+            ...
+        },
+        ...
+    }
+    """ 
+    groups_by_dept = {}
+    for row in all_group_info:
+        group_row = StudyGroup(row)
+        dept = group_row.getClassDept()
+        num = str(group_row.getClassNum())
+        group_id = str(group_row.getGroupId())
+
+        if dept not in groups_by_dept:
+            groups_by_dept[dept] = {}
+
+        if num not in groups_by_dept[dept]:
+            groups_by_dept[dept][num] = {}
+
+        if group_id not in groups_by_dept[dept][num]:
+            groups_by_dept[dept][num][group_id] = []
+        
+        groups_by_dept[dept][num][group_id].extend(groups_by_id[group_id])
+
+
+    print("Group Data")
+    print(groups_by_dept)
 
 
 # ---------------------------------------------------------------------
