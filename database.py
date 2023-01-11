@@ -200,11 +200,7 @@ def getMetrics():
                 groups_by_netid[netid] = []
             groups_by_netid[netid].append((dept + num, group_id))
 
-
-    print("Group Data")
-    print(groups_by_dept)
-    print("==========================")
-    print(groups_by_netid)
+    return groups_by_dept, groups_by_netid
 
 def _getGroupData():
     conn = db.connect()
@@ -719,7 +715,12 @@ def reset_classes(netid):
 # ---------------------------------------------------------------------
 if __name__ == '__main__':
     print('database.py')
-    getMetrics()
+    
+    groups_by_dept, groups_by_netid = getMetrics()
+    print("\nGroups by Dept")
+    print(groups_by_dept)
+    print("\nGroups by Netid")
+    print(groups_by_netid)
 
 
 
