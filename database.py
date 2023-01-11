@@ -137,6 +137,22 @@ def getAdmin():
         admins.append(row[0])
     return admins
 
+# ---------------------------------------------------------------------
+# --- METRICS ----
+def getMetrics():
+    conn = db.connect()
+    stmt = group_info.select()
+    all_group_info = conn.execute(stmt)
+
+    stmt = group_assignment.select()
+    all_group_assignment = conn.execute(stmt)
+    conn.close()
+
+    print("Group Info")
+    print(list(all_group_info))
+    print("Group Assignment")
+    print(list(all_group_assignment))
+
 
 # ---------------------------------------------------------------------
 # --- FACULTY ----
@@ -639,6 +655,7 @@ def reset_classes(netid):
 # ---------------------------------------------------------------------
 if __name__ == '__main__':
     print('database.py')
+    getMetrics()
 
 
 
