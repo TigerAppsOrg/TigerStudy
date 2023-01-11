@@ -49,14 +49,19 @@
                     class="accordion-toggle"
                   >
                     <td>{{classnum}}</td>
-                    <td>{{groups_by_dept[dept][classnum][0]}}</td>
+                    <td>
+                      {{dept_course_data[dept]['courses'][classnum]['title']}}
+                    </td>
                     <td>
                       <div>
-                        {{groups_by_dept[dept][classnum][1] | length}} Groups
+                        {{dept_course_data[dept]['courses'][classnum]['num_groups']}}
+                        Groups
                       </div>
                     </td>
                     <td>
-                      {% if groups_by_dept[dept][classnum][1] | length > 0 %}
+                      {% if
+                      dept_course_data[dept]['courses'][classnum]['num_groups']
+                      > 0 %}
                       <button class="btn btn-default btn-xs" style="padding: 0">
                         +
                       </button>
@@ -73,11 +78,11 @@
                         id="demo-{{dept}}-{{classnum}}"
                         class="accordian-body collapse"
                       >
-                        {% for group_id in groups_by_dept[dept][classnum][1] %}
+                        {% for group_id in groups_by_dept[dept][classnum] %}
                         <div>
                           Group {{group_id}}: {% for netid in
-                          groups_by_dept[dept][classnum][1][group_id] %}
-                          {{netid}}, {% endfor %}
+                          groups_by_dept[dept][classnum][group_id] %} {{netid}},
+                          {% endfor %}
                         </div>
                         {% endfor %}
                       </div>
