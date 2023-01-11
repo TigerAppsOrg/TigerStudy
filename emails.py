@@ -6,6 +6,8 @@ from flask_mail import Message
 from database import *
 
 
+TIGERSTUDY_EMAIL = "tiger-study@princeton.edu"
+
 # sends email to welcome new student to a new group when they are the first
 # student in that group
 def newGroupWelcomeEmail(netid, groupid):
@@ -23,7 +25,7 @@ def newGroupWelcomeEmail(netid, groupid):
     msg = Message(
         subject=subject,
         body=body,
-        sender="tiger-study@princeton.edu",
+        sender=TIGERSTUDY_EMAIL,
         recipients=[netid + "@princeton.edu"],
     )
 
@@ -42,7 +44,7 @@ def courseDeniedEmail(netids, dept, num):
     msg = Message(
         subject=subject,
         body=body,
-        sender="tiger-study@princeton.edu",
+        sender=TIGERSTUDY_EMAIL,
         recipients=emails,
     )
 
@@ -70,7 +72,7 @@ def courseApprovedEmail(groups, dept, num):
             body=body.replace("$COURSE$", str(dept) + str(num)).replace(
                 "$CONTACT_INFO$", contact_summary
             ),
-            sender="tiger-study@princeton.edu",
+            sender=TIGERSTUDY_EMAIL,
             recipients=email,
         )
 
@@ -121,7 +123,7 @@ def newStudentWelcomeEmail(netid, students, groupid):
     msg = Message(
         subject=subject,
         body=body,
-        sender="tiger-study@princeton.edu",
+        sender=TIGERSTUDY_EMAIL,
         recipients=email,
     )
 
@@ -134,9 +136,7 @@ def welcomeEmail(netid):
     subject, body = fetchEmailTemplate("First Login Welcome Email")
 
     email = [str(netid) + "@princeton.edu"]
-    msg = Message(
-        subject=subject, body=body, sender="tiger-study@princeton.edu", recipients=email
-    )
+    msg = Message(subject=subject, body=body, sender=TIGERSTUDY_EMAIL, recipients=email)
 
     return msg
 
@@ -150,18 +150,18 @@ def waitingApprovalEmail(dept, num, netid):
     msg = Message(
         subject=subject,
         body=body,
-        sender="tiger-study@princeton.edu",
+        sender=TIGERSTUDY_EMAIL,
         recipients=email,
     )
 
+    # TODO: replace this with toggles in the admin interface
     email_admins = [
         "gawonj@princeton.edu",
         "iokkinga@princeton.edu",
-        "nvoge@princeton.edu",
     ]
     msg_admins = Message(
         "Someone has requested to join TigerStudy for " + str(dept) + str(num),
-        sender="tiger-study@princeton.edu",
+        sender=TIGERSTUDY_EMAIL,
         recipients=email_admins,
     )
     msg_admins.body = (

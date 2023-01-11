@@ -3,7 +3,7 @@ emailTemplateFormHelpers = {
     NO_PLACEHOLDERS_MESSAGE = "N/A. Do not use any placeholders.";
     COURSE_PLACEHOLDER_MESSAGE = "$COURSE$ for the course name.";
     CONTACT_INFO_PLACEHOLDER_MESSAGE =
-      "$CONTACT_INFO$ for the group's contact summary.";
+      "$CONTACT_INFO$ for the study group's names and emails.";
     RECIPIENT_PLACEHOLDER_MESSAGE = "$RECIPIENT for the student's name.";
     JOINEE_PLACEHOLDER_MESSAGE =
       "$JOINEE$ for the name of the student who's joining the group.";
@@ -40,7 +40,7 @@ emailTemplateFormHelpers = {
   },
   updateEmailTemplateForm: (data, newType) => {
     PLACEHOLDERS_INSTRUCTIONS_PREFIX =
-      "You may use *only* the following placeholder(s): ";
+      "<b>You may <i>only</i> use the following placeholder(s): </b>";
 
     EMAIL_SUBJECT_INPUT = $("#email-subject-input");
     EMAIL_BODY_INPUT = $("#email-body-input");
