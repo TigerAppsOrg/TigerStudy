@@ -28,7 +28,20 @@
                 data-target="#collapse-{{dept}}"
                 aria-controls="collapse-{{dept}}"
               >
-                {{dept}}
+                <div class="row">
+                  <div class="col-sm">{{dept}}</div>
+                  <div class="col-sm">
+                    {{dept_course_data[dept]['num_courses_with_groups']}} /
+                    {{dept_course_data[dept]['num_courses_total']}} Courses Have
+                    Groups
+                  </div>
+                  <div class="col-sm">
+                    {{dept_course_data[dept]['num_groups']}} Groups
+                  </div>
+                  <div class="col-sm">
+                    {{dept_course_data[dept]['num_unique_students']}} Students
+                  </div>
+                </div>
               </button>
             </h5>
           </div>
@@ -53,10 +66,12 @@
                       {{dept_course_data[dept]['courses'][classnum]['title']}}
                     </td>
                     <td>
-                      <div>
-                        {{dept_course_data[dept]['courses'][classnum]['num_groups']}}
-                        Groups
-                      </div>
+                      {{dept_course_data[dept]['courses'][classnum]['num_unique_students']}}
+                      Students
+                    </td>
+                    <td>
+                      {{dept_course_data[dept]['courses'][classnum]['num_groups']}}
+                      Groups
                     </td>
                     <td>
                       {% if
