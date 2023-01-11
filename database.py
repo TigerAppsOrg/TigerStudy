@@ -250,6 +250,7 @@ def getMetrics():
         
     for dept in groups_by_dept:
         dept_students_set = set()
+        dept_num_groups = 0
 
         for num in groups_by_dept[dept]:
             students_set = set()
@@ -258,6 +259,7 @@ def getMetrics():
 
             # number of groups
             dept_course_data[dept]['courses'][num]['num_groups'] = num_groups 
+            dept_num_groups += num_groups
 
             # number of courses with groups
             if num_groups > 0:
@@ -272,6 +274,9 @@ def getMetrics():
             dept_course_data[dept]['courses'][num]['num_unique_students'] = len(students_set)
         
         dept_course_data[dept]['num_unique_students'] = len(dept_students_set)
+
+        # number of groups in this dept
+        dept_course_data[dept]['num_groups'] = dept_num_groups
 
 
     # sort by keys in alphabetical order
