@@ -212,6 +212,10 @@ def getMetrics():
                 groups_by_netid[netid] = []
             groups_by_netid[netid].append((dept + num, group_id))
 
+    # sort by keys in alphabetical order
+    groups_by_dept = dict(sorted(groups_by_dept.items()))
+    groups_by_netid = dict(sorted(groups_by_netid.items()))
+
     return groups_by_dept, groups_by_netid
 
 def _getGroupData():
