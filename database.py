@@ -203,6 +203,7 @@ def getMetrics():
             groups_by_dept[dept] = {}
             dept_course_data[dept] = {
                 'courses': {},
+                'num_courses_total': 0
             }
 
         if num not in groups_by_dept[dept]:
@@ -210,6 +211,8 @@ def getMetrics():
             dept_course_data[dept]['courses'][num] = {
                 'title': title,
             }
+        
+        dept_course_data[dept]['num_courses_total'] += 1
 
     """
 
@@ -256,8 +259,6 @@ def getMetrics():
 
             # number of unique students
             dept_course_data[dept]['courses'][num]['num_unique_students'] = len(students_set)
-            
-            
 
 
     # sort by keys in alphabetical order
