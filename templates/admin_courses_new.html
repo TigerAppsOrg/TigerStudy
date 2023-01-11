@@ -43,18 +43,44 @@
               <table class="table table-striped">
                 <tbody>
                   {% for classnum in groups_by_dept[dept] %}
-                  <tr>
+                  <tr
+                    data-toggle="collapse"
+                    data-target="#demo-{{dept}}-{{classnum}}"
+                    class="accordion-toggle"
+                  >
                     <td>{{classnum}}</td>
                     <td>{{groups_by_dept[dept][classnum][0]}}</td>
                     <td>
-                      {% for group_id in groups_by_dept[dept][classnum][1] %}
                       <div>
-                        Group {{group_id}}: {% for netid in
-                        groups_by_dept[dept][classnum][1][group_id] %}
-                        {{netid}}, {% endfor %}
+                        {{groups_by_dept[dept][classnum][1] | length}} Groups
                       </div>
-                      <br />
-                      {% endfor %}
+                    </td>
+                    <td>
+                      {% if groups_by_dept[dept][classnum][1] | length > 0 %}
+                      <button class="btn btn-default btn-xs" style="padding: 0">
+                        +
+                      </button>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colspan="6"
+                      class="hiddenRow"
+                      style="padding: 0 !important"
+                    >
+                      <div
+                        id="demo-{{dept}}-{{classnum}}"
+                        class="accordian-body collapse"
+                      >
+                        {% for group_id in groups_by_dept[dept][classnum][1] %}
+                        <div>
+                          Group {{group_id}}: {% for netid in
+                          groups_by_dept[dept][classnum][1][group_id] %}
+                          {{netid}}, {% endfor %}
+                        </div>
+                        {% endfor %}
+                      </div>
                     </td>
                   </tr>
                   {% endfor %}
