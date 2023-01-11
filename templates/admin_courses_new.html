@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<!-- =============================================================== -->
+<!-- admin_courses.html                                              -->
+<!-- Author: Shannon Heh                                             -->
+<!-- =============================================================== -->
+
+<html lang="en">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+    {% include 'nav.html' %}
+    <div class="container" style="background-color: #e77500">
+      <h1 style="text-align: center">Admin Course View</h1>
+      <br />
+    </div>
+
+    <div class="container">
+      <div id="accordion-dept">
+        {% for dept in groups_by_dept %}
+        <div class="card">
+          <div class="card-header" id="header-{{dept}}">
+            <h5 class="mb-0">
+              <button
+                class="btn btn-link"
+                data-toggle="collapse"
+                data-target="#collapse-{{dept}}"
+                aria-controls="collapse-{{dept}}"
+              >
+                {{dept}}
+              </button>
+            </h5>
+          </div>
+
+          <div
+            id="collapse-{{dept}}"
+            class="collapse"
+            aria-labelledby="heading-{{dept}}"
+            data-parent="#accordion-dept"
+          >
+            <div class="card-body">
+              <table class="table table-striped">
+                <tbody>
+                  {% for classnum in groups_by_dept[dept] %}
+                  <tr>
+                    <td>{{classnum}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <br />
+    <br />
+
+    {% include 'footer.html' %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  </body>
+</html>

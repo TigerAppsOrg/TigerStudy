@@ -444,9 +444,12 @@ def admin_courses():
         useraccount = userAccount(netid, role)
         login_user(useraccount)
 
-    html = render_template('admin_courses.html',
+    groups_by_dept, _ = getMetrics()
+
+    html = render_template('admin_courses_new.html',
                            netid=netid,
                            isAdmin=isAdmin(netid),
+                           groups_by_dept=groups_by_dept,
                            )
     response = make_response(html)
     return response
