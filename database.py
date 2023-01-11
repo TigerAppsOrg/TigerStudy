@@ -203,7 +203,8 @@ def getMetrics():
             groups_by_dept[dept] = {}
             dept_course_data[dept] = {
                 'courses': {},
-                'num_courses_total': 0
+                'num_courses_total': 0,
+                'num_courses_with_groups': 0,
             }
 
         if num not in groups_by_dept[dept]:
@@ -251,8 +252,14 @@ def getMetrics():
         for num in groups_by_dept[dept]:
             students_set = set()
 
+            num_groups = len(groups_by_dept[dept][num])
+
             # number of groups
-            dept_course_data[dept]['courses'][num]['num_groups'] = len(groups_by_dept[dept][num])
+            dept_course_data[dept]['courses'][num]['num_groups'] = num_groups 
+
+            # number of courses with groups
+            if num_groups > 0:
+                dept_course_data[dept]['num_courses_with_groups'] += 1
 
             for group_id in groups_by_dept[dept][num]:
                 students_set.update(set(groups_by_dept[dept][num][group_id]))
