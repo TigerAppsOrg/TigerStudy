@@ -154,18 +154,36 @@ def getMetrics():
         
         groups_by_id[group_id].append(net_id)
 
+    """
+    dept_course_data
+    {
+        dept: {
+            "num_unique_students": #,
+            "num_groups": #,
+            "num_courses_with_groups": #,
+            "num_courses_total": #,
+            "courses": {
+                classnum: {
+                    "title": "ABC",
+                    "num_unique_students": #,
+                    "num_groups": #,
+                }
+                ...
+            },
+            ...
+        }
+    }
+    """
+    dept_course_data = {}
 
     """
     groups_by_dept
     {
         dept: {
             classnum: {
-                (
-                    classtitle,
-                    {
-                        groupid: [netid1, netid2, ...],
-                    }
-                )
+                {
+                    groupid: [netid1, netid2, ...],
+                }
             },
             ...
         },
@@ -183,9 +201,16 @@ def getMetrics():
 
         if dept not in groups_by_dept:
             groups_by_dept[dept] = {}
+            dept_course_data[dept] = {
+                'courses': {},
+            }
 
         if num not in groups_by_dept[dept]:
-            groups_by_dept[dept][num] = (title, {})
+            groups_by_dept[dept][num] = {}
+            dept_course_data[dept]['courses'][num] = {
+                'title': title,
+            }
+
     """
 
     groups_by_netid
@@ -205,13 +230,13 @@ def getMetrics():
             groups_by_dept[dept] = {}
 
         if num not in groups_by_dept[dept]:
-            groups_by_dept[dept][num] = ('', {})
+            groups_by_dept[dept][num]  = {}
 
-        if group_id not in groups_by_dept[dept][num][1]:
-            groups_by_dept[dept][num][1][group_id] = []
-        
+        if group_id not in groups_by_dept[dept][num]:
+            groups_by_dept[dept][num][group_id] = []
+
         group_netids = groups_by_id[group_id]
-        groups_by_dept[dept][num][1][group_id].extend(group_netids)
+        groups_by_dept[dept][num][group_id].extend(group_netids)
 
         for netid in group_netids:
             if netid not in groups_by_netid:
@@ -222,7 +247,7 @@ def getMetrics():
     groups_by_dept = dict(sorted(groups_by_dept.items()))
     groups_by_netid = dict(sorted(groups_by_netid.items()))
 
-    return groups_by_dept, groups_by_netid
+    return groups_by_dept, groups_by_netid, dept_course_data
 
 def _getGroupData():
     conn = db.connect()
@@ -741,11 +766,13 @@ def reset_classes(netid):
 if __name__ == '__main__':
     print('database.py')
 
-    groups_by_dept, groups_by_netid = getMetrics()
+    groups_by_dept, groups_by_netid, dept_course_data = getMetrics()
     print("\nGroups by Dept")
     print(groups_by_dept)
     print("\nGroups by Netid")
     print(groups_by_netid)
+    print("\nDepartment Course Data")
+    print(dept_course_data)
 
 
 
