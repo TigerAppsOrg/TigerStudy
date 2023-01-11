@@ -158,15 +158,15 @@ def getMetrics():
     dept_course_data
     {
         dept: {
-            "num_unique_students": #,
-            "num_groups": #,
-            "num_courses_with_groups": #,
-            "num_courses_total": #,
-            "courses": {
+            'num_unique_students': #,
+            'num_groups': #,
+            'num_courses_with_groups': #,
+            'num_courses_total': #,
+            'courses': {
                 classnum: {
-                    "title": "ABC",
-                    "num_unique_students": #,
-                    "num_groups": #,
+                    'title': "ABC",
+                    'num_unique_students': #,
+                    'num_groups': #,
                 }
                 ...
             },
@@ -203,6 +203,8 @@ def getMetrics():
             groups_by_dept[dept] = {}
             dept_course_data[dept] = {
                 'courses': {},
+                'num_unique_students': 0,
+                'num_groups': 0,
                 'num_courses_total': 0,
                 'num_courses_with_groups': 0,
             }
@@ -211,6 +213,8 @@ def getMetrics():
             groups_by_dept[dept][num] = {}
             dept_course_data[dept]['courses'][num] = {
                 'title': title,
+                'num_unique_students': 0,
+                'num_groups': 0,
             }
         
         dept_course_data[dept]['num_courses_total'] += 1
@@ -257,7 +261,7 @@ def getMetrics():
 
             num_groups = len(groups_by_dept[dept][num])
 
-            # number of groups
+            # number of groups in this course
             dept_course_data[dept]['courses'][num]['num_groups'] = num_groups 
             dept_num_groups += num_groups
 
@@ -270,9 +274,10 @@ def getMetrics():
                 students_set.update(group_set)
                 dept_students_set.update(group_set)
 
-            # number of unique students
+            # number of unique students in this course
             dept_course_data[dept]['courses'][num]['num_unique_students'] = len(students_set)
         
+        # number of unique students in this dept
         dept_course_data[dept]['num_unique_students'] = len(dept_students_set)
 
         # number of groups in this dept
