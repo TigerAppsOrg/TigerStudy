@@ -139,14 +139,9 @@ def getAdmin():
 
 # ---------------------------------------------------------------------
 # --- METRICS ----
-def getMetrics():
-    conn = db.connect()
-    stmt = group_info.select()
-    all_group_info = conn.execute(stmt)
 
-    stmt = group_assignment.select()
-    all_group_assignment = conn.execute(stmt)
-    conn.close()
+def getMetrics():
+    all_group_info, all_group_assignment = _getGroupData()
 
     groups_by_id = {} # key is groupid, value is list of netids
     for row in all_group_assignment:
@@ -210,6 +205,17 @@ def getMetrics():
     print(groups_by_dept)
     print("==========================")
     print(groups_by_netid)
+
+def _getGroupData():
+    conn = db.connect()
+    stmt = group_info.select()
+    all_group_info = conn.execute(stmt)
+
+    stmt = group_assignment.select()
+    all_group_assignment = conn.execute(stmt)
+    conn.close()
+
+    return all_group_info, all_group_assignment
 
 
 # ---------------------------------------------------------------------
