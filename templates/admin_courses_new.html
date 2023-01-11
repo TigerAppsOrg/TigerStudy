@@ -45,6 +45,17 @@
                   {% for classnum in groups_by_dept[dept] %}
                   <tr>
                     <td>{{classnum}}</td>
+                    <td>{{groups_by_dept[dept][classnum][0]}}</td>
+                    <td>
+                      {% for group_id in groups_by_dept[dept][classnum][1] %}
+                      <div>
+                        Group {{group_id}}: {% for netid in
+                        groups_by_dept[dept][classnum][1][group_id] %}
+                        {{netid}}, {% endfor %}
+                      </div>
+                      <br />
+                      {% endfor %}
+                    </td>
                   </tr>
                   {% endfor %}
                 </tbody>

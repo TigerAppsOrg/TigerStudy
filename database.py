@@ -160,7 +160,12 @@ def getMetrics():
     {
         dept: {
             classnum: {
-                groupid: [netid1, netid2, ...]
+                (
+                    classtitle,
+                    {
+                        groupid: [netid1, netid2, ...],
+                    }
+                )
             },
             ...
         },
@@ -174,12 +179,13 @@ def getMetrics():
         course_row = Course(row)
         dept = course_row.getDept()
         num = course_row.getNum()
+        title = course_row.getTitle()
 
         if dept not in groups_by_dept:
             groups_by_dept[dept] = {}
 
         if num not in groups_by_dept[dept]:
-            groups_by_dept[dept][num] = {}
+            groups_by_dept[dept][num] = (title, {})
     """
 
     groups_by_netid
@@ -199,13 +205,13 @@ def getMetrics():
             groups_by_dept[dept] = {}
 
         if num not in groups_by_dept[dept]:
-            groups_by_dept[dept][num] = {}
+            groups_by_dept[dept][num] = ('', {})
 
-        if group_id not in groups_by_dept[dept][num]:
-            groups_by_dept[dept][num][group_id] = []
+        if group_id not in groups_by_dept[dept][num][1]:
+            groups_by_dept[dept][num][1][group_id] = []
         
         group_netids = groups_by_id[group_id]
-        groups_by_dept[dept][num][group_id].extend(group_netids)
+        groups_by_dept[dept][num][1][group_id].extend(group_netids)
 
         for netid in group_netids:
             if netid not in groups_by_netid:
