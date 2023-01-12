@@ -6,60 +6,55 @@ from flask_mail import Message
 from database import *
 
 
+TIGERSTUDY_EMAIL = "tiger-study@princeton.edu"
+
 # sends email to welcome new student to a new group when they are the first
 # student in that group
 def newGroupWelcomeEmail(netid, groupid):
+    subject, body = fetchEmailTemplate("New Group Welcome Email")
+
     student_info = getStudentInformation(netid)
     first_name = (
         netid if student_info.getFirstName() == "" else student_info.getFirstName()
     )
+    course_name = getCourseName(groupid)
 
-    group_information = getGroupInformation(groupid)
+    subject = subject.replace("$COURSE$", course_name)
+    body = body.replace("$RECIPIENT$", str(first_name)).replace("$COURSE$", course_name)
+
     msg = Message(
-        "Welcome to TigerStudy for "
-        + str(group_information.getClassDept())
-        + str(group_information.getClassNum()),
-        sender="tiger-study@princeton.edu",
+        subject=subject,
+        body=body,
+        sender=TIGERSTUDY_EMAIL,
         recipients=[netid + "@princeton.edu"],
-    )
-
-    intro = (
-        "Dear "
-        + str(first_name)
-        + ", \n\nThank you for joining TigerStudy for "
-        + str(group_information.getClassDept())
-        + str(group_information.getClassNum())
-    )
-    msg.body = (
-        intro
-        + ". You're the first member of your group! We will reach out to you very soon once we've "
-        "matched you with other students. \n\nIn the meantime, for any questions or inquiries, feel "
-        "free to respond to this email.\n\nKind regards,\n\nYour TigerStudy Friends "
     )
 
     return msg
 
 
 def courseDeniedEmail(netids, dept, num):
+    subject, body = fetchEmailTemplate("Course Denied Email")
+
     emails = []
     for netid in netids:
         emails.append(str(netid) + "@princeton.edu")
 
-    msg = Message(
-        "Course Status Update for " + str(dept) + str(num),
-        sender="tiger-study@princeton.edu",
-        recipients=emails,
-    )
+    subject = subject.replace("$COURSE$", str(dept) + str(num))
 
-    msg.body = (
-        "Dear Student, \n\n We are so sorry, but your instructor has chosen to opt-out of using TigerStudy for this "
-        "course. As a result, we can't match you into any groups.\n\nKind regards, \n\nYour TigerStudy Friends "
+    msg = Message(
+        subject=subject,
+        body=body,
+        sender=TIGERSTUDY_EMAIL,
+        recipients=emails,
     )
 
     return msg
 
 
 def courseApprovedEmail(groups, dept, num):
+    subject, body = fetchEmailTemplate("Course Approved Email")
+
+    msgs = []
     for students in groups:
         contact_summary = ""
         email = []
@@ -73,29 +68,24 @@ def courseApprovedEmail(groups, dept, num):
             contact_summary += str(s.getNetid()) + "@princeton.edu\n"
 
         msg = Message(
-            dept + " " + num + " has been approved on TigerStudy",
-            sender="tiger-study@princeton.edu",
+            subject=subject.replace("$COURSE$", str(dept) + str(num)),
+            body=body.replace("$COURSE$", str(dept) + str(num)).replace(
+                "$CONTACT_INFO$", contact_summary
+            ),
+            sender=TIGERSTUDY_EMAIL,
             recipients=email,
         )
-        msg.body = (
-            "Hello TigerStudy Friends, \n\nJust wanted to let you know that "
-            + str(dept)
-            + " "
-            + str(num)
-            + " has been approved on TigerStudy. \n\nBelow is the "
-            + "contact information of everyone in your group - and we will continue to reach out to you if others "
-            "join "
-            "in the future. Have fun!\n\n" + str(contact_summary)
-        )
 
-    return msg
+        msgs.append(msg)
+
+    return msgs
 
 
 # -----------------------------------------------------------------------
 # sends email welcome a new student to an already existing study group
 def newStudentWelcomeEmail(netid, students, groupid):
-    print("SENDING EMAIL IN NEW STUDENT WELCOME EMAIL")
-    print(students)
+    subject, body = fetchEmailTemplate("New Student Welcome Email")
+
     student_info = getStudentInformation(students[0])
     if student_info.getFirstName() == "":
         student_name = student_info.getNetid()
@@ -104,7 +94,9 @@ def newStudentWelcomeEmail(netid, students, groupid):
             str(student_info.getFirstName()) + " " + str(student_info.getLastName())
         )
     netid = student_info.getNetid()
-    group_information = getGroupInformation(groupid)
+
+    course_name = getCourseName(groupid)
+
     email = [netid + "@princeton.edu"]
     contact_summary = ""
     for std in students:
@@ -120,25 +112,19 @@ def newStudentWelcomeEmail(netid, students, groupid):
         name_msg = (
             str(student_info.getFirstName()) + " " + str(student_info.getLastName())
         )
-    msg = Message(
-        name_msg
-        + " has joined your group for "
-        + str(group_information.getClassDept())
-        + str(group_information.getClassNum()),
-        sender="tiger-study@princeton.edu",
-        recipients=email,
+
+    subject = subject.replace("$COURSE$", course_name).replace("$JOINEE$", name_msg)
+    body = (
+        body.replace("$COURSE$", course_name)
+        .replace("$JOINEE$", student_name)
+        .replace("$CONTACT_INFO$", contact_summary)
     )
-    msg.body = (
-        "Hello TigerStudy Friends, \n\nJust wanted to let you know that "
-        + str(student_name)
-        + " has joined your "
-        "study group for "
-        + str(group_information.getClassDept())
-        + str(group_information.getClassNum())
-        + ". \n\nBelow is the "
-        + "contact information of everyone in your group - and we will continue to reach out to you if others "
-        "join "
-        "in the future. Have fun!\n\n" + str(contact_summary)
+
+    msg = Message(
+        subject=subject,
+        body=body,
+        sender=TIGERSTUDY_EMAIL,
+        recipients=email,
     )
 
     return msg
@@ -147,41 +133,35 @@ def newStudentWelcomeEmail(netid, students, groupid):
 # -----------------------------------------------------------------------
 # sends welcome email for first login of new student
 def welcomeEmail(netid):
+    subject, body = fetchEmailTemplate("First Login Welcome Email")
+
     email = [str(netid) + "@princeton.edu"]
-    msg = Message(
-        "Welcome to TigerStudy!", sender="tiger-study@princeton.edu", recipients=email
-    )
-    msg.body = (
-        "Welcome to TigerStudy! \n\nWe're so glad that you've joined our community, and we wanted to reach out "
-        " and say hello.\n\nIf you have any feedback, questions or concerns, feel free to respond to this email or "
-        "reach out to our two site "
-        "administrators Caroline di Vittorio '22 (cmdv@princeton.edu) and Kasey McFadden '22 "
-        "(kaseym@princeton.edu).\n\nKind regards,\n\nThe TigerStudy Community"
-    )
+    msg = Message(subject=subject, body=body, sender=TIGERSTUDY_EMAIL, recipients=email)
 
     return msg
 
 
 def waitingApprovalEmail(dept, num, netid):
-    print("pending approval")
-    print(dept)
-    print(num)
-    print(netid)
+    subject, body = fetchEmailTemplate("Waiting Approval Email")
+
+    subject = subject.replace("$COURSE$", str(dept) + str(num))
+
     email = [str(netid) + "@princeton.edu"]
     msg = Message(
-        "Thank you for signing up for " + str(dept) + str(num) + "!",
-        sender="tiger-study@princeton.edu",
+        subject=subject,
+        body=body,
+        sender=TIGERSTUDY_EMAIL,
         recipients=email,
     )
-    msg.body = (
-        "This class is still pending approval from your professor. We will reach out to you as soon as we "
-        "hear back from the course instructors. We appreciate your patience. "
-    )
 
-    email_admins = ["gawonj@princeton.edu", "iokkinga@princeton.edu"]
+    # TODO: replace this with toggles in the admin interface
+    email_admins = [
+        "gawonj@princeton.edu",
+        "iokkinga@princeton.edu",
+    ]
     msg_admins = Message(
         "Someone has requested to join TigerStudy for " + str(dept) + str(num),
-        sender="tiger-study@princeton.edu",
+        sender=TIGERSTUDY_EMAIL,
         recipients=email_admins,
     )
     msg_admins.body = (
@@ -193,3 +173,27 @@ def waitingApprovalEmail(dept, num, netid):
     )
 
     return [msg, msg_admins]
+
+
+def fetchEmailTemplate(type_):
+    conn = db.connect()
+    stmt = emails.select().where(emails.c.type == type_)
+    result = conn.execute(stmt)
+    conn.close()
+    template = list(result)[0]
+    _, subject, body = template
+    return subject, body
+
+
+def getCourseName(groupid):
+    group_information = getGroupInformation(groupid)
+    return group_information.getClassDept() + group_information.getClassNum()
+
+
+if __name__ == "__main__":
+    # print(fetchEmailTemplate("Waiting Approval Email"))
+    # print(newGroupWelcomeEmail("tl5559", 581))
+    # print(courseDeniedEmail([], "ECO", 100))
+    # print(courseApprovedEmail([["ntyp"]], "ECO", 100))
+    # print(newStudentWelcomeEmail("tl5559", ["tl5559", "ntyp"], 581))
+    print(welcomeEmail("ntyp"))
