@@ -745,7 +745,10 @@ def getAdminBreakdown():
 
     stmt = group_assignment.select()
     result = conn.execute(stmt).fetchall()
-    num_participants = 0 if result is None else len(result)
+    netids = set()
+    for row in result:
+        netids.add(GroupAssignment(row).getNetid())
+    num_participants = len(netids)
 
     conn.close()
     return [num_student_visisted, num_groups, num_participants]
