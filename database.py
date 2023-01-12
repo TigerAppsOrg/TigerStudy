@@ -30,52 +30,59 @@ meta = MetaData()
 
 # ---------------------------------------------------------------------
 student = Table(
-    'student', meta,
-    Column('netid', String, primary_key=True),
-    Column('first_name', String),
-    Column('last_name', String),
-    Column('phone', String),
-    Column('availability', String),
-    Column('honor_code', String),
+    "student",
+    meta,
+    Column("netid", String, primary_key=True),
+    Column("first_name", String),
+    Column("last_name", String),
+    Column("phone", String),
+    Column("availability", String),
+    Column("honor_code", String),
 )
 
 group_info = Table(
-    'group_info', meta,
-    Column('groupid', Integer, primary_key=True),
-    Column('dept', String),
-    Column('classnum', String),
+    "group_info",
+    meta,
+    Column("groupid", Integer, primary_key=True),
+    Column("dept", String),
+    Column("classnum", String),
 )
 
 group_assignment = Table(
-    'group_assignment', meta,
-    Column('groupid', Integer, primary_key=True),
-    Column('netid', String),
+    "group_assignment",
+    meta,
+    Column("groupid", Integer, primary_key=True),
+    Column("netid", String),
 )
 
 classes = Table(
-    'classes', meta,
-    Column('dept', String),
-    Column('classnum', String),
-    Column('endorsed', Integer),
-    Column('title', String),
-    Column('notes', String),
+    "classes",
+    meta,
+    Column("dept", String),
+    Column("classnum", String),
+    Column("endorsed", Integer),
+    Column("title", String),
+    Column("notes", String),
 )
 
 admin = Table(
-    'admin', meta,
-    Column('netid', String),
+    "admin",
+    meta,
+    Column("netid", String),
 )
 
 faculty_access = Table(
-    'faculty_access', meta,
-    Column('netid', String),
+    "faculty_access",
+    meta,
+    Column("netid", String),
 )
 
 cycle = Table(
-    'cycle', meta,
-    Column('netid', String),
-    Column('start', Date),
-    Column('term', String),
+    "cycle",
+    meta,
+    Column("netid", String),
+    Column("start", Date),
+    Column("term", String),
 )
 
 
@@ -92,6 +99,7 @@ def getCycleInfo():
     conn.close()
     return Cycle(result.fetchone())
 
+
 # ---------------------------------------------------------------------
 # --- ADMIN ----
 # returns true if the relevant netid is granted admin access
@@ -101,6 +109,7 @@ def isAdmin(netid):
     result = conn.execute(stmt)
     conn.close()
     return result.fetchone() is not None
+
 
 # adds relevant netid to authorized admin access
 def addAdmin(netid):
@@ -114,9 +123,10 @@ def addAdmin(netid):
     conn.close()
     return Alert(["success", str(netid) + " added successfully!"])
 
+
 # removes relevant netid from authorized admin access
 def deleteAdmin(netid):
-    if netid == '':
+    if netid == "":
         return Alert(["danger", "Enter an admin netid."])
     if isAdmin(netid):
         conn = db.connect()
@@ -125,6 +135,7 @@ def deleteAdmin(netid):
         conn.close()
         return Alert(["success", str(netid) + " removed successfully!"])
     return Alert(["danger", str(netid) + " not an admin."])
+
 
 # returns a list of netids of all authorized admin
 def getAdmin():
@@ -296,10 +307,11 @@ def isFaculty(netid):
     conn.close()
     return result.fetchone() is not None
 
+
 # adds relevant netid to authorized faculty list
 def addFaculty(netid):
     if netid is None or netid == "":
-        return Alert(["danger", "Enter a faculty netid."]) 
+        return Alert(["danger", "Enter a faculty netid."])
     if isFaculty(netid):
         return Alert(["danger", str(netid) + " is already an approved faculty."])
     conn = db.connect()
@@ -308,9 +320,10 @@ def addFaculty(netid):
     conn.close()
     return Alert(["success", str(netid) + " added successfully!"])
 
+
 # removes relevant netid from authorized faculty access
 def deleteFaculty(netid):
-    if netid == '':
+    if netid == "":
         return Alert(["danger", "Enter a faculty netid."])
     if isFaculty(netid):
         conn = db.connect()
@@ -319,6 +332,7 @@ def deleteFaculty(netid):
         conn.close()
         return Alert(["success", str(netid) + " removed successfully!"])
     return Alert(["danger", str(netid) + " not an approved faculty."])
+
 
 # returns a list of netids of all authorized faculty
 def getFaculty():
@@ -337,10 +351,14 @@ def getFaculty():
 # creates a new student in database
 def createNewStudent(netid):
     conn = db.connect()
-    stmt = student.insert().values(netid=netid, availability='{True, True, True, True, True, True, True}',
-                                   honor_code='not accepted')
+    stmt = student.insert().values(
+        netid=netid,
+        availability="{True, True, True, True, True, True, True}",
+        honor_code="not accepted",
+    )
     conn.execute(stmt)
     conn.close()
+
 
 # returns a student object with the relevant student information
 def getStudentInformation(netid):
@@ -351,20 +369,27 @@ def getStudentInformation(netid):
     conn.close()
     return None if info is None else Student(info)
 
+
 # student_info is a Student object
 # updates the relevant student with the information in student_info
 def updateStudent(student_info):
     if student_info is None or student_info.getNetid == "":
-        return Alert(['failure', "Please Enter Contact Information"])
+        return Alert(["failure", "Please Enter Contact Information"])
     conn = db.connect()
     stmt = student.delete().where(student.c.netid == student_info.getNetid())
     conn.execute(stmt)
-    stmt = student.insert().values(netid=student_info.getNetid(), first_name=student_info.getFirstName(),
-                                   last_name=student_info.getLastName(), phone=student_info.getPhone(),
-                                   availability=student_info.getAvailability(), honor_code=student_info.getHonorCode())
+    stmt = student.insert().values(
+        netid=student_info.getNetid(),
+        first_name=student_info.getFirstName(),
+        last_name=student_info.getLastName(),
+        phone=student_info.getPhone(),
+        availability=student_info.getAvailability(),
+        honor_code=student_info.getHonorCode(),
+    )
     conn.execute(stmt)
     conn.close()
-    return Alert(['success', "Your contact information has been successfully saved."])
+    return Alert(["success", "Your contact information has been successfully saved."])
+
 
 # returns true if this is the first login of a student, and false otherwise
 def firstLogin(netid):
@@ -376,19 +401,29 @@ def firstLogin(netid):
 # returns the title of the class
 def getCourseTitle(dept, num):
     conn = db.connect()
-    stmt = classes.select().where(classes.c.dept == dept).where(classes.c.classnum == str(num))
+    stmt = (
+        classes.select()
+        .where(classes.c.dept == dept)
+        .where(classes.c.classnum == str(num))
+    )
     result = conn.execute(stmt)
     title = Course(result.fetchone()).getTitle()
     conn.close()
     return title
 
+
 # returns the number of groups in that class
 def numberGroupsInClass(dept, num):
     conn = db.connect()
-    stmt = group_info.select().where(group_info.c.dept == dept).where(group_info.c.classnum == num)
+    stmt = (
+        group_info.select()
+        .where(group_info.c.dept == dept)
+        .where(group_info.c.classnum == num)
+    )
     result = conn.execute(stmt)
     conn.close()
     return len(result.fetchall())
+
 
 # returns a list of netids of the students in the relevant group
 def getStudentsInGroup(groupid):
@@ -401,11 +436,16 @@ def getStudentsInGroup(groupid):
     conn.close()
     return netids
 
+
 # returns a list of netids of the students in the relevant class
 def getStudentsInClass(dept, num):
     conn = db.connect()
-    stmt = group_assignment.select().where(group_assignment.c.groupid == group_info.c.groupid).where(
-        group_info.c.dept == dept).where(group_info.c.classnum == num)
+    stmt = (
+        group_assignment.select()
+        .where(group_assignment.c.groupid == group_info.c.groupid)
+        .where(group_info.c.dept == dept)
+        .where(group_info.c.classnum == num)
+    )
     result = conn.execute(stmt)
     netids = []
     for row in result:
@@ -413,39 +453,57 @@ def getStudentsInClass(dept, num):
     conn.close()
     return netids
 
+
 # returns true if the student is already joined in the class
 def isStudentInClass(netid, dept, num):
     global group_assignment
     global group_info
     conn = db.connect()
-    stmt = group_assignment.select().where(group_assignment.c.netid == netid).where(
-        group_assignment.c.groupid == group_info.c.groupid).where(group_info.c.dept == dept).where(
-        group_info.c.classnum == num)
+    stmt = (
+        group_assignment.select()
+        .where(group_assignment.c.netid == netid)
+        .where(group_assignment.c.groupid == group_info.c.groupid)
+        .where(group_info.c.dept == dept)
+        .where(group_info.c.classnum == num)
+    )
     result = conn.execute(stmt)
     conn.close()
     return result.fetchone() is not None
 
+
 # gets the relevant class from database
 def getCourse(dept, num):
     conn = db.connect()
-    stmt = classes.select().where(classes.c.dept == dept).where(classes.c.classnum == num)
+    stmt = (
+        classes.select().where(classes.c.dept == dept).where(classes.c.classnum == num)
+    )
     result = conn.execute(stmt)
     for row in result:
         return Course(row)
     return None
 
-# returns the endorsement status of the relevant class 
+
+# returns the endorsement status of the relevant class
 def getClassEndorsement(dept, coursenum):
     conn = db.connect()
-    stmt = classes.select().where(classes.c.classnum == coursenum).where(classes.c.dept == dept)
+    stmt = (
+        classes.select()
+        .where(classes.c.classnum == coursenum)
+        .where(classes.c.dept == dept)
+    )
     result = conn.execute(stmt)
     return Course(result.fetchone()).isEndorsed()
+
 
 # returns the groupids that the relevant student has joined (both approved and unapproved)
 def getJoinedGroups(netid):
     conn = db.connect()
-    stmt = group_assignment.select().where(group_assignment.c.netid == netid).where(
-        group_assignment.c.groupid == group_info.c.groupid).order_by(group_info.c.dept, group_info.c.classnum)
+    stmt = (
+        group_assignment.select()
+        .where(group_assignment.c.netid == netid)
+        .where(group_assignment.c.groupid == group_info.c.groupid)
+        .order_by(group_info.c.dept, group_info.c.classnum)
+    )
     result = conn.execute(stmt)
     groups = []
     for row in result:
@@ -453,11 +511,16 @@ def getJoinedGroups(netid):
     conn.close()
     return groups
 
+
 # returns the classes that the relevant student has joined (both approved and unapproved)
 def getJoinedClasses(netid):
     conn = db.connect()
-    stmt = group_info.select().where(group_assignment.c.netid == netid).where(
-        group_assignment.c.groupid == group_info.c.groupid).order_by(group_info.c.dept, group_info.c.classnum)
+    stmt = (
+        group_info.select()
+        .where(group_assignment.c.netid == netid)
+        .where(group_assignment.c.groupid == group_info.c.groupid)
+        .order_by(group_info.c.dept, group_info.c.classnum)
+    )
     result = conn.execute(stmt)
     courses = []
     for row in result:
@@ -465,15 +528,20 @@ def getJoinedClasses(netid):
     conn.close()
     return courses
 
+
 # returns the group that the relevant student has been assigned to in that class
 def getGroupOfStudentInClass(netid, dept, num):
     conn = db.connect()
-    stmt = group_info.select().where(group_assignment.c.netid == netid)\
-        .where(group_assignment.c.groupid == group_info.c.groupid)\
-        .where(group_info.c.dept == dept)\
-        .where(group_info.c.classnum==num)
+    stmt = (
+        group_info.select()
+        .where(group_assignment.c.netid == netid)
+        .where(group_assignment.c.groupid == group_info.c.groupid)
+        .where(group_info.c.dept == dept)
+        .where(group_info.c.classnum == num)
+    )
     result = conn.execute(stmt)
     return result.fetchone()[0]
+
 
 # creates a new group within the relevant class; returns the groupid
 def createNewGroup(dept, classnum):
@@ -486,6 +554,7 @@ def createNewGroup(dept, classnum):
     conn.close()
     return key
 
+
 # returns the number of students in the relevant group
 def getNumStudentsInGroup(groupid):
     conn = db.connect()
@@ -494,36 +563,47 @@ def getNumStudentsInGroup(groupid):
     conn.close()
     return len(result.fetchall())
 
+
 # returns the number of groups in the relevant class
 def getNumGroupsInClass(dept, num):
     conn = db.connect()
-    stmt = group_info.select().where(group_info.c.dept == dept).where(group_info.c.classnum == num)
+    stmt = (
+        group_info.select()
+        .where(group_info.c.dept == dept)
+        .where(group_info.c.classnum == num)
+    )
     result = conn.execute(stmt)
     conn.close()
     return len(result.fetchall())
+
 
 # returns the number of students in the class
 def getNumStudentsInClass(dept, num):
     conn = db.connect()
-    stmt = group_assignment.select()\
-        .where(group_info.c.dept == dept)\
-        .where(group_info.c.classnum == num)\
+    stmt = (
+        group_assignment.select()
+        .where(group_info.c.dept == dept)
+        .where(group_info.c.classnum == num)
         .where(group_info.c.groupid == group_assignment.c.groupid)
+    )
 
     result = conn.execute(stmt)
     conn.close()
     return len(result.fetchall())
 
+
 # returns the groupid of all the approved course groups that have been joined by the student
 def getPublicJoinedGroups(netid):
     conn = db.connect()
-    stmt = group_assignment.select()\
-        .where(group_assignment.c.netid == netid)\
-        .where(group_assignment.c.groupid == group_info.c.groupid)\
-        .where(group_info.c.dept == classes.c.dept)\
-        .where(group_info.c.classnum == classes.c.classnum)\
-        .where(classes.c.endorsed == 2)\
+    stmt = (
+        group_assignment.select()
+        .where(group_assignment.c.netid == netid)
+        .where(group_assignment.c.groupid == group_info.c.groupid)
+        .where(group_info.c.dept == classes.c.dept)
+        .where(group_info.c.classnum == classes.c.classnum)
+        .where(classes.c.endorsed == 2)
         .order_by(group_info.c.dept, group_info.c.classnum)
+    )
 
     result = conn.execute(stmt)
     groups = []
@@ -531,6 +611,7 @@ def getPublicJoinedGroups(netid):
         groups.append(row[0])
     conn.close()
     return groups
+
 
 # returns the study group information for the relevant groupid
 def getGroupInformation(groupid):
@@ -543,11 +624,16 @@ def getGroupInformation(groupid):
     else:
         return None
 
+
 # returns a list of groups in class
 def getGroupsInClass(dept, num):
     groups = []
     conn = db.connect()
-    stmt = group_info.select().where(group_info.c.dept == dept).where(group_info.c.classnum == num)
+    stmt = (
+        group_info.select()
+        .where(group_info.c.dept == dept)
+        .where(group_info.c.classnum == num)
+    )
     result = conn.execute(stmt)
     for row in result:
         group = StudyGroup(row)
@@ -563,9 +649,11 @@ def getGroupsInClass(dept, num):
 # class_dept or class_num == "" means search all of the classes
 def search(class_dept, class_num):
     conn = db.connect()
-    stmt = classes.select() \
-        .where(classes.c.classnum.like("%" + str(class_num) + "%")) \
+    stmt = (
+        classes.select()
+        .where(classes.c.classnum.like("%" + str(class_num) + "%"))
         .where(classes.c.dept.like("%" + str(class_dept.upper()) + "%"))
+    )
 
     result = conn.execute(stmt.order_by(classes.c.dept, classes.c.classnum))
 
@@ -575,11 +663,10 @@ def search(class_dept, class_num):
             returned_classes.append(Course(row))
     return returned_classes
 
+
 def searchStudents(netid):
     conn = db.connect()
-    stmt = student.select() \
-        .where(student.c.netid.like("%" + str(netid) + "%"))\
-        
+    stmt = student.select().where(student.c.netid.like("%" + str(netid) + "%"))
     result = conn.execute(stmt.order_by(student.c.netid))
 
     returned_students = []
@@ -609,7 +696,8 @@ def addStudentToClass(netid, dept, num):
     # create new group if necessary
     new_groupid = createNewGroup(dept, num)
     addStudentToGroup(netid, new_groupid)
-    return Alert(["success", new_groupid])        
+    return Alert(["success", new_groupid])
+
 
 # adds the student defined by netid to the group with groupid
 def addStudentToGroup(netid, groupid):
@@ -630,8 +718,11 @@ def removeStudentFromGroup(netid, groupid, dept, num):
         return
     if isStudentInClass(netid, dept, num):
         conn = db.connect()
-        stmt = group_assignment.delete().where(group_assignment.c.groupid == groupid).where(
-            group_assignment.c.netid == netid)
+        stmt = (
+            group_assignment.delete()
+            .where(group_assignment.c.groupid == groupid)
+            .where(group_assignment.c.netid == netid)
+        )
         conn.execute(stmt)
         if getNumStudentsInGroup(groupid) <= 0:
             stmt = group_info.delete().where(group_info.c.groupid == groupid)
@@ -652,8 +743,13 @@ def switchGroup(netid, dept, num):
 
     # get current groupid
     conn = db.connect()
-    stmt = group_assignment.select().where(group_info.c.dept == dept).where(group_info.c.classnum == num).where(
-        group_assignment.c.groupid == group_info.c.groupid).where(group_assignment.c.netid == netid)
+    stmt = (
+        group_assignment.select()
+        .where(group_info.c.dept == dept)
+        .where(group_info.c.classnum == num)
+        .where(group_assignment.c.groupid == group_info.c.groupid)
+        .where(group_assignment.c.netid == netid)
+    )
     result = conn.execute(stmt)
     curr_groupid = -1
     for row in result:
@@ -663,28 +759,34 @@ def switchGroup(netid, dept, num):
     # check if there exists a group to add to
     groups = getGroupsInClass(dept, num)
     for group in groups:
-        if getNumStudentsInGroup(group.getGroupId()) < GROUP_NO_STUDENTS_MAX and group.getGroupId() != curr_groupid:
+        if (
+            getNumStudentsInGroup(group.getGroupId()) < GROUP_NO_STUDENTS_MAX
+            and group.getGroupId() != curr_groupid
+        ):
             addStudentToGroup(netid, group.getGroupId())
             return Alert(["success", group.getGroupId()])
 
     # create new group if necessary
     new_groupid = createNewGroup(dept, num)
     addStudentToGroup(netid, new_groupid)
-    return Alert(["success", new_groupid]) 
-
+    return Alert(["success", new_groupid])
 
 
 # -----------------------------------------------------------------------
 def approveCourse(dept, num, approval, msg):
     conn = db.connect()
-    stmt = classes.select().where(classes.c.dept == dept).where(classes.c.classnum == num)
+    stmt = (
+        classes.select().where(classes.c.dept == dept).where(classes.c.classnum == num)
+    )
     result = conn.execute(stmt)
     course = Course(result.fetchone())
 
-    stmt = classes.update()\
-        .values(endorsed=approval, notes=msg)\
-        .where(classes.c.dept == dept)\
+    stmt = (
+        classes.update()
+        .values(endorsed=approval, notes=msg)
+        .where(classes.c.dept == dept)
         .where(classes.c.classnum == num)
+    )
     conn.execute(stmt)
     conn.close()
 
@@ -706,6 +808,7 @@ def approveCourse(dept, num, approval, msg):
             return [2, all_groups]
 
     return None
+
 
 # -----------------------------------------------------------------------
 # OTHER ADMIN
@@ -731,13 +834,16 @@ def getAdminBreakdown():
     conn.close()
     return [num_student_visisted, num_groups, num_participants]
 
+
 # -----------------------------------------------------------------------
 # ADMIN RESET
 # -----------------------------------------------------------------------
 # inserts new class into the database. Used when the database is being reset.
 def instantiateClass(dept, num, title):
     conn = db.connect()
-    stmt = classes.insert().values(dept=dept, classnum=num, title=title, endorsed=1, notes="")
+    stmt = classes.insert().values(
+        dept=dept, classnum=num, title=title, endorsed=1, notes=""
+    )
     conn.execute(stmt)
     conn.close()
 
@@ -757,25 +863,122 @@ def reset_classes(netid):
     stmt = student.delete()
     conn.execute(stmt)
     stmt = cycle.delete()
-    conn.execute(stmt)    
+    conn.execute(stmt)
 
-    #start a new cycle
-    stmt = cycle.insert().values(netid=netid, start=date.today(), term=str('1223'))
+    # start a new cycle
+    stmt = cycle.insert().values(netid=netid, start=date.today(), term=str("1223"))
     conn.execute(stmt)
     conn.close()
-    #set the classes
-    DEPTS = ["AAS", "AFS", "AMS", "ANT", "AOS", "APC", "ARA", "ARC", "ART", "ASA", "AST", "ATL", "BCS", 
-        "CBE", "CEE", "CGS", "CHI", "CHM", "CHV", "CLA", "CLG", "COM", "COS", "CWR", "CZE", "DAN", "EAS", 
-        "ECO", "ECS", "EEB", "EGR", "ELE", "ENE", "ENG", "ENT", "ENV", "EPS", "FIN", "FRE", "FRS", "GEO", 
-        "GER", "GHP", "GSS", "HEB", "HIN", "HIS", "HLS", "HOS", "HUM", "ISC", "ITA", "JDS", "JPN", "JRN", 
-        "KOR", "LAO", "LAS", "LAT", "LIN", "MAE", "MAT", "MED", "MOD", "MOG", "MOL", "MPP", "MSE", "MTD", 
-        "MUS", "NES", "NEU", "ORF", "PAW", "PER", "PHI", "PHY", "POL", "POP", "POR", "PSY", "QCB", "REL", 
-        "RES", "RUS", "SAN", "SAS", "SLA", "SML", "SOC", "SPA", "SPI", "STC", "SWA", "THR", "TPP", "TRA", 
-        "TUR", "TWI", "URB", "URD", "VIS", "WRI"]
+    # set the classes
+    DEPTS = [
+        "AAS",
+        "AFS",
+        "AMS",
+        "ANT",
+        "AOS",
+        "APC",
+        "ARA",
+        "ARC",
+        "ART",
+        "ASA",
+        "AST",
+        "ATL",
+        "BCS",
+        "CBE",
+        "CEE",
+        "CGS",
+        "CHI",
+        "CHM",
+        "CHV",
+        "CLA",
+        "CLG",
+        "COM",
+        "COS",
+        "CWR",
+        "CZE",
+        "DAN",
+        "EAS",
+        "ECO",
+        "ECS",
+        "EEB",
+        "EGR",
+        "ELE",
+        "ENE",
+        "ENG",
+        "ENT",
+        "ENV",
+        "EPS",
+        "FIN",
+        "FRE",
+        "FRS",
+        "GEO",
+        "GER",
+        "GHP",
+        "GSS",
+        "HEB",
+        "HIN",
+        "HIS",
+        "HLS",
+        "HOS",
+        "HUM",
+        "ISC",
+        "ITA",
+        "JDS",
+        "JPN",
+        "JRN",
+        "KOR",
+        "LAO",
+        "LAS",
+        "LAT",
+        "LIN",
+        "MAE",
+        "MAT",
+        "MED",
+        "MOD",
+        "MOG",
+        "MOL",
+        "MPP",
+        "MSE",
+        "MTD",
+        "MUS",
+        "NES",
+        "NEU",
+        "ORF",
+        "PAW",
+        "PER",
+        "PHI",
+        "PHY",
+        "POL",
+        "POP",
+        "POR",
+        "PSY",
+        "QCB",
+        "REL",
+        "RES",
+        "RUS",
+        "SAN",
+        "SAS",
+        "SLA",
+        "SML",
+        "SOC",
+        "SPA",
+        "SPI",
+        "STC",
+        "SWA",
+        "THR",
+        "TPP",
+        "TRA",
+        "TUR",
+        "TWI",
+        "URB",
+        "URD",
+        "VIS",
+        "WRI",
+    ]
     num_courses = 0
     for dept in DEPTS:
         scrape_results = scrape(dept)
-        print('scraped ' + str(dept))
+        print("scraped " + str(dept))
         for course in scrape_results:
             num_courses = num_courses + 1
             coursenum = course.get("coursenum")
@@ -785,11 +988,6 @@ def reset_classes(netid):
     print(num_courses)
 
 
-
-
 # ---------------------------------------------------------------------
-if __name__ == '__main__':
-    print('database.py')
-
-
-
+if __name__ == "__main__":
+    print("database.py")
