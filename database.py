@@ -219,15 +219,6 @@ def getMetrics():
         
         dept_course_data[dept]['num_courses_total'] += 1
 
-    """
-
-    groups_by_netid
-    {
-        netid: [(dept + classnum, groupid)]
-    }
-    """
-    groups_by_netid = {}
-
     for row in all_group_info:
         group_row = StudyGroup(row)
         dept = group_row.getClassDept()
@@ -245,12 +236,6 @@ def getMetrics():
 
         group_netids = groups_by_id[group_id]
         groups_by_dept[dept][num][group_id].extend(group_netids)
-
-        for netid in group_netids:
-            if netid not in groups_by_netid:
-                groups_by_netid[netid] = []
-            groups_by_netid[netid].append((dept + num, group_id))
-
         
     for dept in groups_by_dept:
         dept_students_set = set()
@@ -289,9 +274,8 @@ def getMetrics():
 
     # sort by depts in alphabetical order
     groups_by_dept = dict(sorted(groups_by_dept.items()))
-    groups_by_netid = dict(sorted(groups_by_netid.items()))
 
-    return groups_by_dept, groups_by_netid, dept_course_data
+    return groups_by_dept, dept_course_data
 
 def _getGroupData():
     conn = db.connect()
@@ -813,11 +797,9 @@ def reset_classes(netid):
 if __name__ == '__main__':
     print('database.py')
 
-    groups_by_dept, groups_by_netid, dept_course_data = getMetrics()
+    groups_by_dept, dept_course_data = getMetrics()
     print("\nGroups by Dept")
     print(groups_by_dept)
-    print("\nGroups by Netid")
-    print(groups_by_netid)
     print("\nDepartment Course Data")
     print(dept_course_data)
 

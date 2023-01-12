@@ -444,7 +444,7 @@ def admin_courses():
         useraccount = userAccount(netid, role)
         login_user(useraccount)
 
-    groups_by_dept, _ = getMetrics()
+    groups_by_dept, dept_course_data = getMetrics()
 
     html = render_template('admin_courses_new.html',
                            netid=netid,
