@@ -16,7 +16,7 @@
       <br />
     </div>
 
-    <div class="container">
+    <div class="container my-3">
       <div id="accordion-dept">
         {% for dept in groups_by_dept %}
         <div class="card">
@@ -56,14 +56,16 @@
             data-parent="#accordion-dept"
           >
             <div class="card-body">
-              <table class="table table-striped">
+              <table
+                class="course-table table table-striped border table-borderless"
+              >
                 <tbody>
                   {% for classnum in groups_by_dept[dept] %}
-                  <tr>
+                  <tr class="course-row">
                     <td class="col-md-1" style="color: #e77500">
                       {{classnum}}
                     </td>
-                    <td class="col-md-5">
+                    <td class="col-md-4">
                       {{dept_course_data[dept]['courses'][classnum]['title']}}
                     </td>
                     <td class="col-md-2">
@@ -74,12 +76,27 @@
                       {{dept_course_data[dept]['courses'][classnum]['num_groups']}}
                       Groups
                     </td>
+                    <td class="col-md-2">
+                      <form action="edit_course" method="get" target="_blank">
+                        <input type="hidden" name="dept" value="{{dept}}" />
+                        <input
+                          type="hidden"
+                          name="classnum"
+                          value="{{classnum}}"
+                        />
+                        <input
+                          type="submit"
+                          class="btn edit-course-btn"
+                          value="Edit Course Info"
+                        />
+                      </form>
+                    </td>
                     <td class="col-md-1">
                       {% if
                       dept_course_data[dept]['courses'][classnum]['num_groups']
                       > 0 %}
                       <button
-                        class="groups-btn btn btn-default btn-xs accordion-toggle py-0 px-2"
+                        class="groups-btn btn btn-default btn-xs accordion-toggle"
                         data-toggle="collapse"
                         data-target="#row-{{dept}}-{{classnum}}"
                       >
