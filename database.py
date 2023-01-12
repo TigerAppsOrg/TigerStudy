@@ -217,6 +217,7 @@ def getMetrics():
                 'num_groups': 0,
             }
         
+        # increment total number of courses per dept
         dept_course_data[dept]['num_courses_total'] += 1
 
     for row in all_group_info:
@@ -225,12 +226,7 @@ def getMetrics():
         num = str(group_row.getClassNum())
         group_id = str(group_row.getGroupId())
 
-        if dept not in groups_by_dept:
-            groups_by_dept[dept] = {}
-
-        if num not in groups_by_dept[dept]:
-            groups_by_dept[dept][num]  = {}
-
+        # append netids to this group
         if group_id not in groups_by_dept[dept][num]:
             groups_by_dept[dept][num][group_id] = []
 
@@ -242,25 +238,23 @@ def getMetrics():
         dept_num_groups = 0
 
         for num in groups_by_dept[dept]:
-            students_set = set()
-
-            num_groups = len(groups_by_dept[dept][num])
-
             # number of groups in this course
-            dept_course_data[dept]['courses'][num]['num_groups'] = num_groups 
-            dept_num_groups += num_groups
+            course_num_groups = len(groups_by_dept[dept][num])
+            dept_course_data[dept]['courses'][num]['num_groups'] = course_num_groups 
+            dept_num_groups += course_num_groups
 
-            # number of courses with groups
-            if num_groups > 0:
+            # increment number of courses with groups
+            if course_num_groups > 0:
                 dept_course_data[dept]['num_courses_with_groups'] += 1
 
+            course_students_set = set()
             for group_id in groups_by_dept[dept][num]:
                 group_set = set(groups_by_dept[dept][num][group_id])
-                students_set.update(group_set)
+                course_students_set.update(group_set)
                 dept_students_set.update(group_set)
 
             # number of unique students in this course
-            dept_course_data[dept]['courses'][num]['num_unique_students'] = len(students_set)
+            dept_course_data[dept]['courses'][num]['num_unique_students'] = len(course_students_set)
         
         # number of unique students in this dept
         dept_course_data[dept]['num_unique_students'] = len(dept_students_set)
@@ -796,12 +790,6 @@ def reset_classes(netid):
 # ---------------------------------------------------------------------
 if __name__ == '__main__':
     print('database.py')
-
-    groups_by_dept, dept_course_data = getMetrics()
-    print("\nGroups by Dept")
-    print(groups_by_dept)
-    print("\nDepartment Course Data")
-    print(dept_course_data)
 
 
 
