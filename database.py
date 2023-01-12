@@ -283,8 +283,11 @@ def getMetrics():
         # number of groups in this dept
         dept_course_data[dept]['num_groups'] = dept_num_groups
 
+    # sort by increasing course number
+    for dept in groups_by_dept:
+        groups_by_dept[dept] = dict(sorted(groups_by_dept[dept].items()))
 
-    # sort by keys in alphabetical order
+    # sort by depts in alphabetical order
     groups_by_dept = dict(sorted(groups_by_dept.items()))
     groups_by_netid = dict(sorted(groups_by_netid.items()))
 
