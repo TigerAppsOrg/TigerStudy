@@ -450,6 +450,7 @@ def admin_courses():
                            netid=netid,
                            isAdmin=isAdmin(netid),
                            groups_by_dept=groups_by_dept,
+                           dept_course_data=dept_course_data,
                            )
     response = make_response(html)
     return response
