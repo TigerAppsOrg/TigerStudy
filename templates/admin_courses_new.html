@@ -33,7 +33,7 @@
                   <div class="col-1 text-left" style="color: #e77500">
                     {{dept}}
                   </div>
-                  <div class="col-3 text-left">
+                  <div class="col-4 text-left">
                     {{dept_course_data[dept]['num_courses_with_groups']}} /
                     {{dept_course_data[dept]['num_courses_total']}} Courses Have
                     Groups
@@ -41,7 +41,7 @@
                   <div class="col-2 text-left">
                     {{dept_course_data[dept]['num_groups']}} Groups
                   </div>
-                  <div class="col-5 text-left">
+                  <div class="col-2 text-left">
                     {{dept_course_data[dept]['num_unique_students']}} Students
                   </div>
                 </div>
@@ -69,12 +69,12 @@
                       {{dept_course_data[dept]['courses'][classnum]['title']}}
                     </td>
                     <td class="col-md-2">
-                      {{dept_course_data[dept]['courses'][classnum]['num_unique_students']}}
-                      Students
-                    </td>
-                    <td class="col-md-2">
                       {{dept_course_data[dept]['courses'][classnum]['num_groups']}}
                       Groups
+                    </td>
+                    <td class="col-md-2">
+                      {{dept_course_data[dept]['courses'][classnum]['num_unique_students']}}
+                      Students
                     </td>
                     <td class="col-md-2">
                       <form action="edit_course" method="get" target="_blank">
