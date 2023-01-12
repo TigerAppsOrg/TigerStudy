@@ -20,25 +20,28 @@
       <div id="accordion-dept">
         {% for dept in groups_by_dept %}
         <div class="card">
-          <div class="card-header" id="header-{{dept}}">
+          <div class="card-header dept-card-header" id="header-{{dept}}">
             <h5 class="mb-0">
               <button
-                class="btn btn-link"
+                class="btn btn-link btn-block p-0"
                 data-toggle="collapse"
                 data-target="#collapse-{{dept}}"
                 aria-controls="collapse-{{dept}}"
+                style="text-decoration: none; color: black"
               >
                 <div class="row">
-                  <div class="col-sm">{{dept}}</div>
-                  <div class="col-sm">
+                  <div class="col-1 text-left" style="color: #e77500">
+                    {{dept}}
+                  </div>
+                  <div class="col-3 text-left">
                     {{dept_course_data[dept]['num_courses_with_groups']}} /
                     {{dept_course_data[dept]['num_courses_total']}} Courses Have
                     Groups
                   </div>
-                  <div class="col-sm">
+                  <div class="col-2 text-left">
                     {{dept_course_data[dept]['num_groups']}} Groups
                   </div>
-                  <div class="col-sm">
+                  <div class="col-5 text-left">
                     {{dept_course_data[dept]['num_unique_students']}} Students
                   </div>
                 </div>
@@ -56,43 +59,42 @@
               <table class="table table-striped">
                 <tbody>
                   {% for classnum in groups_by_dept[dept] %}
-                  <tr
-                    data-toggle="collapse"
-                    data-target="#demo-{{dept}}-{{classnum}}"
-                    class="accordion-toggle"
-                  >
-                    <td>{{classnum}}</td>
-                    <td>
+                  <tr>
+                    <td class="col-md-1" style="color: #e77500">
+                      {{classnum}}
+                    </td>
+                    <td class="col-md-5">
                       {{dept_course_data[dept]['courses'][classnum]['title']}}
                     </td>
-                    <td>
+                    <td class="col-md-2">
                       {{dept_course_data[dept]['courses'][classnum]['num_unique_students']}}
                       Students
                     </td>
-                    <td>
+                    <td class="col-md-2">
                       {{dept_course_data[dept]['courses'][classnum]['num_groups']}}
                       Groups
                     </td>
-                    <td>
+                    <td class="col-md-1">
                       {% if
                       dept_course_data[dept]['courses'][classnum]['num_groups']
                       > 0 %}
-                      <button class="btn btn-default btn-xs" style="padding: 0">
+                      <button
+                        class="groups-btn btn btn-default btn-xs accordion-toggle py-0 px-2"
+                        data-toggle="collapse"
+                        data-target="#row-{{dept}}-{{classnum}}"
+                      >
                         +
                       </button>
                       {% endif %}
                     </td>
                   </tr>
                   <tr>
-                    <td
-                      colspan="6"
-                      class="hiddenRow"
-                      style="padding: 0 !important"
-                    >
+                    <td colspan="12" class="py-0 px-3">
                       <div
-                        id="demo-{{dept}}-{{classnum}}"
+                        id="row-{{dept}}-{{classnum}}"
                         class="accordian-body collapse"
                       >
+                        <div>&nbsp;</div>
                         {% for group_id in groups_by_dept[dept][classnum] %}
                         <div>
                           Group {{group_id}}: {% for netid in
@@ -100,6 +102,7 @@
                           {% endfor %}
                         </div>
                         {% endfor %}
+                        <div>&nbsp;</div>
                       </div>
                     </td>
                   </tr>
