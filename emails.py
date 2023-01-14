@@ -210,3 +210,20 @@ if __name__ == "__main__":
     sg = SendGridAPIClient(SENDGRID_API_KEY)
     message = newGroupWelcomeEmail("sheh", 804)
     sg.send(message)
+
+    message = courseDeniedEmail(["sheh"], "COS", 302)
+    sg.send(message)
+
+    messages = courseApprovedEmail([["sheh"], ["sheh"]], "COS", 302)
+    for msg in messages:
+        sg.send(msg)
+
+    message = newStudentWelcomeEmail("sheh", ["ntyp", "sheh"], 804)
+    sg.send(message)
+
+    message = welcomeEmail("sheh")
+    sg.send(message)
+
+    messages = waitingApprovalEmail("COS", 302, "sheh")
+    sg.send(messages[0])
+    sg.send(messages[1])
