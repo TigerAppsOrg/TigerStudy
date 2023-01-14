@@ -6,7 +6,8 @@ from flask_mail import Message
 from database import *
 
 
-TIGERSTUDY_EMAIL = "tiger-study@princeton.edu"
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+TIGERSTUDY_EMAIL = os.environ.get("MAIL_USERNAME")
 
 # sends email to welcome new student to a new group when they are the first
 # student in that group
