@@ -156,6 +156,154 @@ def getAdmin():
         admins.append(row[0])
     return admins
 
+# ---------------------------------------------------------------------
+# --- METRICS ----
+
+def getMetrics():
+    all_classes, all_group_info, all_group_assignment = _getGroupData()
+
+    groups_by_id = {} # key is groupid, value is list of netids
+    for row in all_group_assignment:
+        assignment_row = GroupAssignment(row)
+        group_id = str(assignment_row.getGroupId())
+        net_id = assignment_row.getNetid()
+
+        if group_id not in groups_by_id:
+            groups_by_id[group_id] = []
+        
+        groups_by_id[group_id].append(net_id)
+
+    """
+    dept_course_data
+    {
+        dept: {
+            'num_unique_students': #,
+            'num_groups': #,
+            'num_courses_with_groups': #,
+            'num_courses_total': #,
+            'courses': {
+                classnum: {
+                    'title': "ABC",
+                    'num_unique_students': #,
+                    'num_groups': #,
+                }
+                ...
+            },
+            ...
+        }
+    }
+    """
+    dept_course_data = {}
+
+    """
+    groups_by_dept
+    {
+        dept: {
+            classnum: {
+                {
+                    groupid: [netid1, netid2, ...],
+                }
+            },
+            ...
+        },
+        ...
+    }
+    """ 
+    groups_by_dept = {}
+
+    # every class should have an entry, even if it has no groups
+    for row in all_classes:
+        course_row = Course(row)
+        dept = course_row.getDept()
+        num = course_row.getNum()
+        title = course_row.getTitle()
+
+        if dept not in groups_by_dept:
+            groups_by_dept[dept] = {}
+            dept_course_data[dept] = {
+                'courses': {},
+                'num_unique_students': 0,
+                'num_groups': 0,
+                'num_courses_total': 0,
+                'num_courses_with_groups': 0,
+            }
+
+        if num not in groups_by_dept[dept]:
+            groups_by_dept[dept][num] = {}
+            dept_course_data[dept]['courses'][num] = {
+                'title': title,
+                'num_unique_students': 0,
+                'num_groups': 0,
+            }
+        
+        # increment total number of courses per dept
+        dept_course_data[dept]['num_courses_total'] += 1
+
+    for row in all_group_info:
+        group_row = StudyGroup(row)
+        dept = group_row.getClassDept()
+        num = str(group_row.getClassNum())
+        group_id = str(group_row.getGroupId())
+
+        # append netids to this group
+        if group_id not in groups_by_dept[dept][num]:
+            groups_by_dept[dept][num][group_id] = []
+
+        group_netids = groups_by_id[group_id]
+        groups_by_dept[dept][num][group_id].extend(group_netids)
+        
+    for dept in groups_by_dept:
+        dept_students_set = set()
+        dept_num_groups = 0
+
+        for num in groups_by_dept[dept]:
+            # number of groups in this course
+            course_num_groups = len(groups_by_dept[dept][num])
+            dept_course_data[dept]['courses'][num]['num_groups'] = course_num_groups 
+            dept_num_groups += course_num_groups
+
+            # increment number of courses with groups
+            if course_num_groups > 0:
+                dept_course_data[dept]['num_courses_with_groups'] += 1
+
+            course_students_set = set()
+            for group_id in groups_by_dept[dept][num]:
+                group_set = set(groups_by_dept[dept][num][group_id])
+                course_students_set.update(group_set)
+                dept_students_set.update(group_set)
+
+            # number of unique students in this course
+            dept_course_data[dept]['courses'][num]['num_unique_students'] = len(course_students_set)
+        
+        # number of unique students in this dept
+        dept_course_data[dept]['num_unique_students'] = len(dept_students_set)
+
+        # number of groups in this dept
+        dept_course_data[dept]['num_groups'] = dept_num_groups
+
+    # sort by increasing course number
+    for dept in groups_by_dept:
+        groups_by_dept[dept] = dict(sorted(groups_by_dept[dept].items()))
+
+    # sort by depts in alphabetical order
+    groups_by_dept = dict(sorted(groups_by_dept.items()))
+
+    return groups_by_dept, dept_course_data
+
+def _getGroupData():
+    conn = db.connect()
+    stmt = classes.select()
+    all_classes = conn.execute(stmt)
+
+    stmt = group_info.select()
+    all_group_info = conn.execute(stmt)
+
+    stmt = group_assignment.select()
+    all_group_assignment = conn.execute(stmt)
+    conn.close()
+
+    return all_classes, all_group_info, all_group_assignment
+
 
 def getEmailTemplates():
     conn = db.connect()
@@ -703,7 +851,10 @@ def getAdminBreakdown():
 
     stmt = group_assignment.select()
     result = conn.execute(stmt).fetchall()
-    num_participants = 0 if result is None else len(result)
+    netids = set()
+    for row in result:
+        netids.add(GroupAssignment(row).getNetid())
+    num_participants = len(netids)
 
     conn.close()
     return [num_student_visisted, num_groups, num_participants]

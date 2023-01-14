@@ -41,6 +41,33 @@
   padding-bottom: 10px;
 }
 
+.dept-card-header:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.groups-btn,
+.edit-course-btn {
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: none;
+}
+
+.groups-btn:hover,
+.edit-course-btn:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.course-row td {
+  vertical-align: middle;
+}
+
+.course-table * {
+  font-size: 0.9rem;
+}
+
+.course-table td {
+  padding: 0.5rem;
+}
+
 .email-admin-box {
   margin-bottom: 20%;
 }
