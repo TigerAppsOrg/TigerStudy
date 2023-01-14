@@ -114,9 +114,9 @@
                         <div>&nbsp;</div>
                         {% for group_id in groups_by_dept[dept][classnum] %}
                         <div>
-                          Group {{group_id}}: {% for netid in
-                          groups_by_dept[dept][classnum][group_id] %} {{netid}},
-                          {% endfor %}
+                          Group {{group_id}}: {{
+                          groups_by_dept[dept][classnum][group_id] | join(', ')
+                          }}
                         </div>
                         {% endfor %}
                         <div>&nbsp;</div>
