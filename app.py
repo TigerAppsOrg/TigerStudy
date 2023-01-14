@@ -452,7 +452,7 @@ def edit_admin():
 
     alert = []
     if action_type == "add_admin":
-        email_list = request.args.get("email_list")
+        email_list = request.args.get("email_list") == "on"
         alert.append(addAdmin(admin_user, email_list))
     else:
         alert.append("None")

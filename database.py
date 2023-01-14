@@ -117,10 +117,6 @@ def isAdmin(netid):
 
 # adds relevant netid to authorized admin access
 def addAdmin(netid, email_list):
-    if email_list is None:
-        return Alert(
-            ["danger", "Specify whether or not to add this admin to the email list."]
-        )
     if netid is None or netid == "":
         return Alert(["danger", "Enter an admin netid."])
     if isAdmin(netid):
