@@ -85,6 +85,14 @@ cycle = Table(
     Column("term", String),
 )
 
+emails = Table(
+    "emails",
+    meta,
+    Column("type", String),
+    Column("subject", String),
+    Column("body", String),
+)
+
 
 # ---------------------------------------------------------------------
 # --------------------- DATABASE INTERFACE ----------------------------
@@ -295,6 +303,23 @@ def _getGroupData():
     conn.close()
 
     return all_classes, all_group_info, all_group_assignment
+
+
+def getEmailTemplates():
+    conn = db.connect()
+    stmt = emails.select()
+    result = conn.execute(stmt)
+    conn.close()
+    return {e[0]: {"subject": e[1], "body": e[2]} for e in result}
+
+
+def updateEmailTemplate(type_, subject, body):
+    conn = db.connect()
+    stmt = (
+        emails.update().where(emails.c.type == type_).values(subject=subject, body=body)
+    )
+    conn.execute(stmt)
+    conn.close()
 
 
 # ---------------------------------------------------------------------
@@ -990,4 +1015,4 @@ def reset_classes(netid):
 
 # ---------------------------------------------------------------------
 if __name__ == "__main__":
-    print("database.py")
+    pass

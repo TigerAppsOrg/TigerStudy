@@ -10,6 +10,7 @@ from urllib.parse import quote
 from re import sub, match
 from flask import request, session, redirect, abort
 from sys import stderr
+import requests
 
 # -----------------------------------------------------------------------
 
@@ -51,11 +52,11 @@ class CASClient:
             + "&ticket="
             + quote(ticket)
         )
-        r = urlopen(val_url).readlines()  # returns 2 lines
+        r = requests.get(val_url).text.split("\n")[:-1]  # returns 2 lines
         if len(r) != 2:
             return None
-        firstLine = r[0].decode("utf-8")
-        secondLine = r[1].decode("utf-8")
+        firstLine = r[0]
+        secondLine = r[1]
         if not firstLine.startswith("yes"):
             return None
         return secondLine
