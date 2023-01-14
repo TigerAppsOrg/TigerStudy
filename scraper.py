@@ -15,8 +15,8 @@ import re
 import ssl
 import pprint
 
-ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
-ssl._create_default_https_context = ssl._create_unverified_context
+# ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
+# ssl._create_default_https_context = ssl._create_unverified_context
 
 TERM_CODE = "current"
 # TERM_CODE='1222' #Fall21
