@@ -65,11 +65,7 @@ classes = Table(
     Column("notes", String),
 )
 
-admin = Table(
-    "admin",
-    meta,
-    Column("netid", String),
-)
+admin = Table("admin", meta, Column("netid", String), Column("email_list", Boolean))
 
 faculty_access = Table(
     "faculty_access",
