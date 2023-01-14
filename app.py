@@ -167,7 +167,9 @@ def _switchStudentInClass(netid, class_dept, class_num):
 
     if endorsement_status == 1:
         if not TESTING:
-            mail.send(waitingApprovalEmail(class_dept, class_num, netid))
+            emails = waitingApprovalEmail(class_dept, class_num, netid)
+            mail.send(emails[0])
+            mail.send(emails[1])
         return groupid
 
     students_in_group = getStudentsInGroup(groupid)
@@ -481,6 +483,49 @@ def edit_admin():
     return response
 
 
+@app.route("/get_email_templates")
+@login_required
+def get_email_templates():
+    netid = NETID
+    if not LOCAL:
+        netid = cas.authenticate()
+        pageType = "special"
+        role = uservalidation(netid)
+        check = checkuser(role, pageType)
+        if not check:
+            return loginfail(True)
+
+    return {"res": getEmailTemplates()}
+
+
+@app.route("/update_email_template", methods=["POST"])
+@login_required
+def update_email_template():
+    netid = NETID
+    if not LOCAL:
+        netid = cas.authenticate()
+        pageType = "special"
+        role = uservalidation(netid)
+        check = checkuser(role, pageType)
+        if not check:
+            return loginfail(True)
+
+    type_ = request.form.get("type")
+    subject = request.form.get("subject")
+    body = request.form.get("body")
+
+    if not (type_ and subject and body):
+        return redirect("admin")
+
+    print(f"Updating email type: {type_}")
+    print(f"Subject: {subject}")
+    print(f"Body: {body}")
+
+    updateEmailTemplate(type_, subject, body)
+
+    return redirect("admin")
+
+
 # ------------------------------------------------------------------------------
 # EDIT COURSE INFORMATION AND MANUAL GROUP INTERVENTION
 # ------------------------------------------------------------------------------
@@ -632,7 +677,9 @@ def admin_override():
 
         if endorsement_status == 1:
             if not TESTING:
-                mail.send(waitingApprovalEmail(dept, classnum, override_netid))
+                emails = waitingApprovalEmail(dept, classnum, override_netid)
+                mail.send(emails[0])
+                mail.send(emails[1])
 
         students_in_group = getStudentsInGroup(new_groupid)
         if len(students_in_group) <= 1:
@@ -655,7 +702,9 @@ def admin_override():
 
         if endorsement_status == 1:
             if not TESTING:
-                mail.send(waitingApprovalEmail(dept, classnum, override_netid))
+                emails = waitingApprovalEmail(dept, classnum, override_netid)
+                mail.send(emails[0])
+                mail.send(emails[1])
 
         students_in_group = getStudentsInGroup(new_groupid)
         if len(students_in_group) <= 1:
@@ -716,7 +765,9 @@ def submit_course_edits():
                 mail.send(courseDeniedEmail(action[1], dept, classnum))
         if action[0] == 2:
             if not TESTING:
-                mail.send(courseApprovedEmail(action[1], dept, classnum))
+                emails = courseApprovedEmail(action[1], dept, classnum)
+                for email in emails:
+                    mail.send(email)
 
     html = render_template(
         "admin_courses.html",
