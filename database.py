@@ -116,13 +116,17 @@ def isAdmin(netid):
 
 
 # adds relevant netid to authorized admin access
-def addAdmin(netid):
+def addAdmin(netid, email_list):
+    if email_list is None:
+        return Alert(
+            ["danger", "Specify whether or not to add this admin to the email list."]
+        )
     if netid is None or netid == "":
         return Alert(["danger", "Enter an admin netid."])
     if isAdmin(netid):
         return Alert(["danger", str(netid) + " is already an admin."])
     conn = db.connect()
-    stmt = admin.insert().values(netid=netid)
+    stmt = admin.insert().values(netid=netid, email_list=email_list)
     conn.execute(stmt)
     conn.close()
     return Alert(["success", str(netid) + " added successfully!"])
