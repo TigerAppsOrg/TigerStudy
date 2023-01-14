@@ -6,7 +6,6 @@ from database import *
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Content
 
-
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 TIGERSTUDY_EMAIL = os.environ.get("MAIL_USERNAME")
 
@@ -92,15 +91,13 @@ def courseApprovedEmail(groups, dept, num):
 def newStudentWelcomeEmail(netid, students, groupid):
     subject, body = fetchEmailTemplate("New Student Welcome Email")
 
-    student_info = getStudentInformation(students[0])
+    student_info = getStudentInformation(netid)
     if student_info.getFirstName() == "":
         student_name = student_info.getNetid()
     else:
         student_name = (
             str(student_info.getFirstName()) + " " + str(student_info.getLastName())
         )
-    netid = student_info.getNetid()
-
     course_name = getCourseName(groupid)
 
     email = [netid + "@princeton.edu"]
@@ -115,9 +112,7 @@ def newStudentWelcomeEmail(netid, students, groupid):
     if student_info.getFirstName() == "":
         name_msg = "A new student"
     else:
-        name_msg = (
-            str(student_info.getFirstName()) + " " + str(student_info.getLastName())
-        )
+        name_msg = student_name
 
     subject = subject.replace("$COURSE$", course_name).replace("$JOINEE$", name_msg)
     body = (
