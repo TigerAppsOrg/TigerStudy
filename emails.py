@@ -2,8 +2,9 @@
 # emails.py
 # Author: Caroline di Vittorio
 # -----------------------------------------------------------------------
-from flask_mail import Message
 from database import *
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, Content
 
 
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
@@ -22,12 +23,13 @@ def newGroupWelcomeEmail(netid, groupid):
 
     subject = subject.replace("$COURSE$", course_name)
     body = body.replace("$RECIPIENT$", str(first_name)).replace("$COURSE$", course_name)
+    content = Content("text/plain", body)
 
-    msg = Message(
+    msg = Mail(
         subject=subject,
-        body=body,
-        sender=TIGERSTUDY_EMAIL,
-        recipients=[netid + "@princeton.edu"],
+        from_email=TIGERSTUDY_EMAIL,
+        to_emails=[netid + "@princeton.edu"],
+        html_content=content,
     )
 
     return msg
@@ -41,12 +43,13 @@ def courseDeniedEmail(netids, dept, num):
         emails.append(str(netid) + "@princeton.edu")
 
     subject = subject.replace("$COURSE$", str(dept) + str(num))
+    content = Content("text/plain", body)
 
-    msg = Message(
+    msg = Mail(
         subject=subject,
-        body=body,
-        sender=TIGERSTUDY_EMAIL,
-        recipients=emails,
+        html_content=content,
+        from_email=TIGERSTUDY_EMAIL,
+        to_emails=emails,
     )
 
     return msg
@@ -68,13 +71,15 @@ def courseApprovedEmail(groups, dept, num):
                 )
             contact_summary += str(s.getNetid()) + "@princeton.edu\n"
 
-        msg = Message(
+        body = body.replace("$COURSE$", str(dept) + str(num)).replace(
+                "$CONTACT_INFO$", contact_summary)
+        content = Content("text/plain", body)
+
+        msg = Mail(
             subject=subject.replace("$COURSE$", str(dept) + str(num)),
-            body=body.replace("$COURSE$", str(dept) + str(num)).replace(
-                "$CONTACT_INFO$", contact_summary
-            ),
-            sender=TIGERSTUDY_EMAIL,
-            recipients=email,
+            html_content=content,
+            from_email=TIGERSTUDY_EMAIL,
+            to_emails=email,
         )
 
         msgs.append(msg)
@@ -120,12 +125,13 @@ def newStudentWelcomeEmail(netid, students, groupid):
         .replace("$JOINEE$", student_name)
         .replace("$CONTACT_INFO$", contact_summary)
     )
+    content = Content("text/plain", body)
 
-    msg = Message(
+    msg = Mail(
         subject=subject,
-        body=body,
-        sender=TIGERSTUDY_EMAIL,
-        recipients=email,
+        html_content=content,
+        from_email=TIGERSTUDY_EMAIL,
+        to_emails=email,
     )
 
     return msg
@@ -137,7 +143,8 @@ def welcomeEmail(netid):
     subject, body = fetchEmailTemplate("First Login Welcome Email")
 
     email = [str(netid) + "@princeton.edu"]
-    msg = Message(subject=subject, body=body, sender=TIGERSTUDY_EMAIL, recipients=email)
+    content = Content("text/plain", body)
+    msg = Mail(subject=subject, html_content=content, from_email=TIGERSTUDY_EMAIL, to_emails=email)
 
     return msg
 
@@ -148,11 +155,12 @@ def waitingApprovalEmail(dept, num, netid):
     subject = subject.replace("$COURSE$", str(dept) + str(num))
 
     email = [str(netid) + "@princeton.edu"]
-    msg = Message(
+    content = Content("text/plain", body)
+    msg = Mail(
         subject=subject,
-        body=body,
-        sender=TIGERSTUDY_EMAIL,
-        recipients=email,
+        html_content=content,
+        from_email=TIGERSTUDY_EMAIL,
+        to_emails=email,
     )
 
     # TODO: replace this with toggles in the admin interface
@@ -160,18 +168,18 @@ def waitingApprovalEmail(dept, num, netid):
         "gawonj@princeton.edu",
         "iokkinga@princeton.edu",
     ]
-    msg_admins = Message(
-        "Someone has requested to join TigerStudy for " + str(dept) + str(num),
-        sender=TIGERSTUDY_EMAIL,
-        recipients=email_admins,
+    msg_admins = Mail(
+        subject="Someone has requested to join TigerStudy for " + str(dept) + str(num),
+        from_email=TIGERSTUDY_EMAIL,
+        to_emails=email_admins,
     )
-    msg_admins.body = (
+    msg_admins.html_content = Content("text/plain", (
         str(netid)
         + " has requested to join "
         + str(dept)
         + str(num)
         + " on TigerStudy."
-    )
+    ))
 
     return [msg, msg_admins]
 
@@ -197,4 +205,8 @@ if __name__ == "__main__":
     # print(courseDeniedEmail([], "ECO", 100))
     # print(courseApprovedEmail([["ntyp"]], "ECO", 100))
     # print(newStudentWelcomeEmail("tl5559", ["tl5559", "ntyp"], 581))
-    print(welcomeEmail("ntyp"))
+    # print(welcomeEmail("ntyp"))
+
+    sg = SendGridAPIClient(SENDGRID_API_KEY)
+    message = newGroupWelcomeEmail("sheh", 804)
+    sg.send(message)
