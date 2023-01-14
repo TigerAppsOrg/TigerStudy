@@ -9,20 +9,14 @@ from CASClient import CASClient
 from emails import *
 from student import Student
 from database import *
-from cycle import Cycle
 from sendgrid import SendGridAPIClient
 
-# from scraper import scrape
-# from breakdown import Breakdown
-from alert import Alert
-import datetime
 import os
 
 import pustatus
 
 from flask_login import (
     login_user,
-    logout_user,
     login_required,
     LoginManager,
     current_user,
@@ -185,6 +179,7 @@ def _switchStudentInClass(netid, class_dept, class_num):
 def home():
     netid = NETID
     isFirstLogin = True
+
     if not LOCAL:
         netid = cas.authenticate()
         # determine whether this is the user's first login

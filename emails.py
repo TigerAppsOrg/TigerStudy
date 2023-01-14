@@ -3,10 +3,8 @@
 # Author: Caroline di Vittorio
 # -----------------------------------------------------------------------
 from database import *
-from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Content
 
-SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 TIGERSTUDY_EMAIL = os.environ.get("MAIL_USERNAME")
 
 # sends email to welcome new student to a new group when they are the first
