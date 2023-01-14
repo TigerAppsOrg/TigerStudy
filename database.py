@@ -149,7 +149,11 @@ def getAdmin():
     conn.close()
     admins = []
     for row in result:
-        admins.append(row[0])
+        netid, email_list = row[0], row[1]
+        admins.append(netid)
+        if email_list:
+            admins[-1] += "*"
+
     return admins
 
 
