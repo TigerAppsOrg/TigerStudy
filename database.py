@@ -157,6 +157,14 @@ def getAdmin():
     return admins
 
 
+def getEmailListAdmins():
+    conn = db.connect()
+    stmt = admin.select().where(admin.c.email_list == True)
+    result = conn.execute(stmt)
+    conn.close()
+    return [f"{row[0]}@princeton.edu" for row in result]
+
+
 def getEmailTemplates():
     conn = db.connect()
     stmt = emails.select()

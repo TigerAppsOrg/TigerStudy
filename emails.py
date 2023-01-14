@@ -154,11 +154,7 @@ def waitingApprovalEmail(dept, num, netid):
         recipients=email,
     )
 
-    # TODO: replace this with toggles in the admin interface
-    email_admins = [
-        "gawonj@princeton.edu",
-        "iokkinga@princeton.edu",
-    ]
+    email_admins = getEmailListAdmins()
     msg_admins = Message(
         "Someone has requested to join TigerStudy for " + str(dept) + str(num),
         sender=TIGERSTUDY_EMAIL,
