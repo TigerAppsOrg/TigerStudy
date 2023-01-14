@@ -168,18 +168,19 @@ def waitingApprovalEmail(dept, num, netid):
         "gawonj@princeton.edu",
         "iokkinga@princeton.edu",
     ]
-    msg_admins = Mail(
-        subject="Someone has requested to join TigerStudy for " + str(dept) + str(num),
-        from_email=TIGERSTUDY_EMAIL,
-        to_emails=email_admins,
-    )
-    msg_admins.html_content = Content("text/plain", (
+    content = Content("text/plain", (
         str(netid)
         + " has requested to join "
         + str(dept)
         + str(num)
         + " on TigerStudy."
     ))
+    msg_admins = Mail(
+        subject="Someone has requested to join TigerStudy for " + str(dept) + str(num),
+        html_content=content,
+        from_email=TIGERSTUDY_EMAIL,
+        to_emails=email_admins,
+    )
 
     return [msg, msg_admins]
 
