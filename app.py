@@ -3,7 +3,6 @@
 # Authors: Caroline di Vittorio and Kasey McFadden
 # -----------------------------------------------------------------------
 
-from flask_mail import Mail, Message
 from flask import Flask, request, make_response, render_template, redirect
 from sys import argv
 from CASClient import CASClient
@@ -11,6 +10,7 @@ from emails import *
 from student import Student
 from database import *
 from cycle import Cycle
+from sendgrid import SendGridAPIClient
 
 # from scraper import scrape
 # from breakdown import Breakdown
@@ -59,15 +59,7 @@ login_manager = LoginManager()
 
 app = Flask(__name__, template_folder="./templates")
 
-
 app.config.update(
-    MAIL_USE_TLS=True,
-    MAIL_USE_SSL=False,
-    MAIL_SUPPRESS_SEND=False,
-    MAIL_PORT=os.environ.get("MAIL_PORT"),
-    MAIL_SERVER=os.environ.get("MAIL_SERVER"),
-    MAIL_USERNAME=os.environ.get("MAIL_USERNAME"),
-    MAIL_PASSWORD=os.environ.get("MAIL_PASSWORD"),
     LOGIN_DISABLED=LOGIN_DISABLED,
 )
 
@@ -77,7 +69,9 @@ login_manager.login_view = "/"
 
 app.secret_key = "super secret key"  # os.environ['SECRET_KEY']
 cas = CASClient()
-mail = Mail(app)
+
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+sg = SendGridAPIClient(SENDGRID_API_KEY)
 
 # ------------------------------------------------------------------------------
 
@@ -139,17 +133,17 @@ def _addStudentToClass(netid, class_dept, class_num):
     if endorsement_status == 1:
         if not TESTING:
             emails = waitingApprovalEmail(class_dept, class_num, netid)
-            mail.send(emails[0])
-            mail.send(emails[1])
+            sg.send(emails[0])
+            sg.send(emails[1])
         return groupid
 
     students_in_group = getStudentsInGroup(groupid)
     if len(students_in_group) <= 1:
         if not TESTING:
-            mail.send(newGroupWelcomeEmail(netid, groupid))
+            sg.send(newGroupWelcomeEmail(netid, groupid))
     else:
         if not TESTING:
-            mail.send(newStudentWelcomeEmail(netid, students_in_group, groupid))
+            sg.send(newStudentWelcomeEmail(netid, students_in_group, groupid))
 
     return groupid
 
@@ -168,17 +162,17 @@ def _switchStudentInClass(netid, class_dept, class_num):
     if endorsement_status == 1:
         if not TESTING:
             emails = waitingApprovalEmail(class_dept, class_num, netid)
-            mail.send(emails[0])
-            mail.send(emails[1])
+            sg.send(emails[0])
+            sg.send(emails[1])
         return groupid
 
     students_in_group = getStudentsInGroup(groupid)
     if len(students_in_group) <= 1:
         if not TESTING:
-            mail.send(newGroupWelcomeEmail(netid, groupid))
+            sg.send(newGroupWelcomeEmail(netid, groupid))
     else:
         if not TESTING:
-            mail.send(newStudentWelcomeEmail(netid, students_in_group, groupid))
+            sg.send(newStudentWelcomeEmail(netid, students_in_group, groupid))
 
     return groupid
 
@@ -208,7 +202,7 @@ def home():
         if isFirstLogin:
             createNewStudent(netid)
             if not TESTING:
-                mail.send(welcomeEmail(netid))
+                sg.send(welcomeEmail(netid))
 
     html = render_template(
         "index.html",
@@ -675,16 +669,16 @@ def admin_override():
         if endorsement_status == 1:
             if not TESTING:
                 emails = waitingApprovalEmail(dept, classnum, override_netid)
-                mail.send(emails[0])
-                mail.send(emails[1])
+                sg.send(emails[0])
+                sg.send(emails[1])
 
         students_in_group = getStudentsInGroup(new_groupid)
         if len(students_in_group) <= 1:
             if not TESTING:
-                mail.send(newGroupWelcomeEmail(override_netid, new_groupid))
+                sg.send(newGroupWelcomeEmail(override_netid, new_groupid))
         else:
             if not TESTING:
-                mail.send(
+                sg.send(
                     newStudentWelcomeEmail(
                         override_netid, students_in_group, new_groupid
                     )
@@ -700,16 +694,16 @@ def admin_override():
         if endorsement_status == 1:
             if not TESTING:
                 emails = waitingApprovalEmail(dept, classnum, override_netid)
-                mail.send(emails[0])
-                mail.send(emails[1])
+                sg.send(emails[0])
+                sg.send(emails[1])
 
         students_in_group = getStudentsInGroup(new_groupid)
         if len(students_in_group) <= 1:
             if not TESTING:
-                mail.send(newGroupWelcomeEmail(override_netid, new_groupid))
+                sg.send(newGroupWelcomeEmail(override_netid, new_groupid))
         else:
             if not TESTING:
-                mail.send(
+                sg.send(
                     newStudentWelcomeEmail(
                         override_netid, students_in_group, new_groupid
                     )
@@ -759,12 +753,12 @@ def submit_course_edits():
     if action is not None:
         if action[0] == 0:
             if not TESTING:
-                mail.send(courseDeniedEmail(action[1], dept, classnum))
+                sg.send(courseDeniedEmail(action[1], dept, classnum))
         if action[0] == 2:
             if not TESTING:
                 emails = courseApprovedEmail(action[1], dept, classnum)
                 for email in emails:
-                    mail.send(email)
+                    sg.send(email)
 
     html = render_template(
         "admin_courses.html",
