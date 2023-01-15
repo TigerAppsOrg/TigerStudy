@@ -15,6 +15,10 @@ import re
 import ssl
 import pprint
 
+# These lines produce an SSL certification error that prevent 
+# emails from being sent on prod.
+# TODO: Monitor logs next time courses are scraped and assess
+# whether these lines are needed.
 # ssl.SSLContext.verify_mode = ssl.VerifyMode.CERT_OPTIONAL
 # ssl._create_default_https_context = ssl._create_unverified_context
 
