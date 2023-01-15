@@ -451,9 +451,9 @@ def edit_admin():
     print("action_type" + str(action_type))
 
     alert = []
-    # alert = ['None', 'None', 'None', 'None']
     if action_type == "add_admin":
-        alert.append(addAdmin(admin_user))
+        email_list = request.args.get("email_list") == "on"
+        alert.append(addAdmin(admin_user, email_list))
     else:
         alert.append("None")
     if action_type == "remove_admin":

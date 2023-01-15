@@ -64,11 +64,9 @@ class CASClient:
     # -------------------------------------------------------------------
 
     def authenticate(self):
-        print(session)
         # If the user's username is in the session, then the user was
         # authenticated previously.  So return the user's username.
         if "username" in session:
-            print("Found user")
             if "impostor" in session and self.isAdmin():
                 if session["impostor"]:
                     return session["impostor"]
@@ -76,8 +74,6 @@ class CASClient:
             if old != old.strip():
                 session["username"] = old.strip()
             return session.get("username")
-
-        print("didn't find user")
 
         # If the request contains a login ticket, then try to
         # validate it.

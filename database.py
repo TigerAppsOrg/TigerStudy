@@ -65,11 +65,7 @@ classes = Table(
     Column("notes", String),
 )
 
-admin = Table(
-    "admin",
-    meta,
-    Column("netid", String),
-)
+admin = Table("admin", meta, Column("netid", String), Column("email_list", Boolean))
 
 faculty_access = Table(
     "faculty_access",
@@ -120,13 +116,13 @@ def isAdmin(netid):
 
 
 # adds relevant netid to authorized admin access
-def addAdmin(netid):
+def addAdmin(netid, email_list):
     if netid is None or netid == "":
         return Alert(["danger", "Enter an admin netid."])
     if isAdmin(netid):
         return Alert(["danger", str(netid) + " is already an admin."])
     conn = db.connect()
-    stmt = admin.insert().values(netid=netid)
+    stmt = admin.insert().values(netid=netid, email_list=email_list)
     conn.execute(stmt)
     conn.close()
     return Alert(["success", str(netid) + " added successfully!"])
@@ -153,7 +149,11 @@ def getAdmin():
     conn.close()
     admins = []
     for row in result:
-        admins.append(row[0])
+        netid, email_list = row[0], row[1]
+        admins.append(netid)
+        if email_list:
+            admins[-1] += "*"
+
     return admins
 
 # ---------------------------------------------------------------------
@@ -303,6 +303,14 @@ def _getGroupData():
     conn.close()
 
     return all_classes, all_group_info, all_group_assignment
+
+
+def getEmailListAdmins():
+    conn = db.connect()
+    stmt = admin.select().where(admin.c.email_list == True)
+    result = conn.execute(stmt)
+    conn.close()
+    return [f"{row[0]}@princeton.edu" for row in result]
 
 
 def getEmailTemplates():
