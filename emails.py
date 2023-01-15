@@ -156,11 +156,7 @@ def waitingApprovalEmail(dept, num, netid):
         to_emails=email,
     )
 
-    # TODO: replace this with toggles in the admin interface
-    email_admins = [
-        "gawonj@princeton.edu",
-        "iokkinga@princeton.edu",
-    ]
+    email_admins = getEmailListAdmins()
     content = Content("text/plain", (
         str(netid)
         + " has requested to join "

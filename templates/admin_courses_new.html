@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<!-- =============================================================== -->
+<!-- admin_courses.html                                              -->
+<!-- Author: Shannon Heh                                             -->
+<!-- =============================================================== -->
+
+<html lang="en">
+  <head>
+    {% include 'header.html' %}
+  </head>
+  <body>
+    {% include 'nav.html' %}
+    <div class="container" style="background-color: #e77500">
+      <h1 style="text-align: center">Admin Course View</h1>
+      <br />
+    </div>
+
+    <div class="container my-3">
+      <div id="accordion-dept">
+        {% for dept in groups_by_dept %}
+        <div class="card">
+          <div class="card-header dept-card-header" id="header-{{dept}}">
+            <h5 class="mb-0">
+              <button
+                class="btn btn-link btn-block p-0"
+                data-toggle="collapse"
+                data-target="#collapse-{{dept}}"
+                aria-controls="collapse-{{dept}}"
+                style="text-decoration: none; color: black"
+              >
+                <div class="row">
+                  <div class="col-1 text-left" style="color: #e77500">
+                    {{dept}}
+                  </div>
+                  <div class="col-4 text-left">
+                    {{dept_course_data[dept]['num_courses_with_groups']}} /
+                    {{dept_course_data[dept]['num_courses_total']}} Courses Have
+                    Groups
+                  </div>
+                  <div class="col-2 text-left">
+                    {{dept_course_data[dept]['num_groups']}} Groups
+                  </div>
+                  <div class="col-2 text-left">
+                    {{dept_course_data[dept]['num_unique_students']}} Students
+                  </div>
+                </div>
+              </button>
+            </h5>
+          </div>
+
+          <div
+            id="collapse-{{dept}}"
+            class="collapse"
+            aria-labelledby="heading-{{dept}}"
+            data-parent="#accordion-dept"
+          >
+            <div class="card-body">
+              <table
+                class="course-table table table-striped border table-borderless"
+              >
+                <tbody>
+                  {% for classnum in groups_by_dept[dept] %}
+                  <tr class="course-row">
+                    <td class="col-md-1" style="color: #e77500">
+                      {{classnum}}
+                    </td>
+                    <td class="col-md-4">
+                      {{dept_course_data[dept]['courses'][classnum]['title']}}
+                    </td>
+                    <td class="col-md-2">
+                      {{dept_course_data[dept]['courses'][classnum]['num_groups']}}
+                      Groups
+                    </td>
+                    <td class="col-md-2">
+                      {{dept_course_data[dept]['courses'][classnum]['num_unique_students']}}
+                      Students
+                    </td>
+                    <td class="col-md-2">
+                      <form action="edit_course" method="get" target="_blank">
+                        <input type="hidden" name="dept" value="{{dept}}" />
+                        <input
+                          type="hidden"
+                          name="classnum"
+                          value="{{classnum}}"
+                        />
+                        <input
+                          type="submit"
+                          class="btn edit-course-btn"
+                          value="Edit Course Info"
+                        />
+                      </form>
+                    </td>
+                    <td class="col-md-1">
+                      {% if
+                      dept_course_data[dept]['courses'][classnum]['num_groups']
+                      > 0 %}
+                      <button
+                        class="groups-btn btn btn-default btn-xs accordion-toggle"
+                        data-toggle="collapse"
+                        data-target="#row-{{dept}}-{{classnum}}"
+                      >
+                        <i class="fa-solid fa-eye"></i>
+                      </button>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="12" class="py-0 px-3">
+                      <div
+                        id="row-{{dept}}-{{classnum}}"
+                        class="accordian-body collapse"
+                      >
+                        <div>&nbsp;</div>
+                        {% for group_id in groups_by_dept[dept][classnum] %}
+                        <div>
+                          Group {{group_id}}: {{
+                          groups_by_dept[dept][classnum][group_id] | join(', ')
+                          }}
+                        </div>
+                        {% endfor %}
+                        <div>&nbsp;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <br />
+    <br />
+
+    {% include 'footer.html' %}
+
+    <script
+      src="https://kit.fontawesome.com/d509f29c31.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  </body>
+</html>
