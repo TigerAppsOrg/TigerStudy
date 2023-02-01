@@ -417,7 +417,7 @@ def start_new_semester():
     # elif sem == "summer":
     #     term += 2
 
-    reset_classes(netid)
+    os.system(f"python update_courses.py {netid} &")
 
     return redirect("admin")
 
@@ -535,12 +535,13 @@ def admin_courses():
 
     groups_by_dept, dept_course_data = getMetrics()
 
-    html = render_template('admin_courses_new.html',
-                           netid=netid,
-                           isAdmin=isAdmin(netid),
-                           groups_by_dept=groups_by_dept,
-                           dept_course_data=dept_course_data,
-                           )
+    html = render_template(
+        "admin_courses_new.html",
+        netid=netid,
+        isAdmin=isAdmin(netid),
+        groups_by_dept=groups_by_dept,
+        dept_course_data=dept_course_data,
+    )
     response = make_response(html)
     return response
 
