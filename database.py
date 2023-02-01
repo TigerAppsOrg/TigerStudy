@@ -156,13 +156,15 @@ def getAdmin():
 
     return admins
 
+
 # ---------------------------------------------------------------------
 # --- METRICS ----
+
 
 def getMetrics():
     all_classes, all_group_info, all_group_assignment = _getGroupData()
 
-    groups_by_id = {} # key is groupid, value is list of netids
+    groups_by_id = {}  # key is groupid, value is list of netids
     for row in all_group_assignment:
         assignment_row = GroupAssignment(row)
         group_id = str(assignment_row.getGroupId())
@@ -170,7 +172,7 @@ def getMetrics():
 
         if group_id not in groups_by_id:
             groups_by_id[group_id] = []
-        
+
         groups_by_id[group_id].append(net_id)
 
     """
@@ -208,7 +210,7 @@ def getMetrics():
         },
         ...
     }
-    """ 
+    """
     groups_by_dept = {}
 
     # every class should have an entry, even if it has no groups
@@ -221,23 +223,23 @@ def getMetrics():
         if dept not in groups_by_dept:
             groups_by_dept[dept] = {}
             dept_course_data[dept] = {
-                'courses': {},
-                'num_unique_students': 0,
-                'num_groups': 0,
-                'num_courses_total': 0,
-                'num_courses_with_groups': 0,
+                "courses": {},
+                "num_unique_students": 0,
+                "num_groups": 0,
+                "num_courses_total": 0,
+                "num_courses_with_groups": 0,
             }
 
         if num not in groups_by_dept[dept]:
             groups_by_dept[dept][num] = {}
-            dept_course_data[dept]['courses'][num] = {
-                'title': title,
-                'num_unique_students': 0,
-                'num_groups': 0,
+            dept_course_data[dept]["courses"][num] = {
+                "title": title,
+                "num_unique_students": 0,
+                "num_groups": 0,
             }
-        
+
         # increment total number of courses per dept
-        dept_course_data[dept]['num_courses_total'] += 1
+        dept_course_data[dept]["num_courses_total"] += 1
 
     for row in all_group_info:
         group_row = StudyGroup(row)
@@ -251,7 +253,7 @@ def getMetrics():
 
         group_netids = groups_by_id[group_id]
         groups_by_dept[dept][num][group_id].extend(group_netids)
-        
+
     for dept in groups_by_dept:
         dept_students_set = set()
         dept_num_groups = 0
@@ -259,12 +261,12 @@ def getMetrics():
         for num in groups_by_dept[dept]:
             # number of groups in this course
             course_num_groups = len(groups_by_dept[dept][num])
-            dept_course_data[dept]['courses'][num]['num_groups'] = course_num_groups 
+            dept_course_data[dept]["courses"][num]["num_groups"] = course_num_groups
             dept_num_groups += course_num_groups
 
             # increment number of courses with groups
             if course_num_groups > 0:
-                dept_course_data[dept]['num_courses_with_groups'] += 1
+                dept_course_data[dept]["num_courses_with_groups"] += 1
 
             course_students_set = set()
             for group_id in groups_by_dept[dept][num]:
@@ -273,13 +275,15 @@ def getMetrics():
                 dept_students_set.update(group_set)
 
             # number of unique students in this course
-            dept_course_data[dept]['courses'][num]['num_unique_students'] = len(course_students_set)
-        
+            dept_course_data[dept]["courses"][num]["num_unique_students"] = len(
+                course_students_set
+            )
+
         # number of unique students in this dept
-        dept_course_data[dept]['num_unique_students'] = len(dept_students_set)
+        dept_course_data[dept]["num_unique_students"] = len(dept_students_set)
 
         # number of groups in this dept
-        dept_course_data[dept]['num_groups'] = dept_num_groups
+        dept_course_data[dept]["num_groups"] = dept_num_groups
 
     # sort by increasing course number
     for dept in groups_by_dept:
@@ -289,6 +293,7 @@ def getMetrics():
     groups_by_dept = dict(sorted(groups_by_dept.items()))
 
     return groups_by_dept, dept_course_data
+
 
 def _getGroupData():
     conn = db.connect()
@@ -899,6 +904,7 @@ def reset_classes(netid):
     conn.execute(stmt)
 
     # start a new cycle
+    # term argument isn't used anymore
     stmt = cycle.insert().values(netid=netid, start=date.today(), term=str("1223"))
     conn.execute(stmt)
     conn.close()
