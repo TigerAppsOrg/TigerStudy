@@ -417,7 +417,7 @@ def start_new_semester():
     # elif sem == "summer":
     #     term += 2
 
-    reset_classes(netid)
+    os.system(f"python update_courses.py {netid} &")
 
     return redirect("admin")
 
