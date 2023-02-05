@@ -30,45 +30,77 @@
             The semester in progress was launched by {{cycle.getNetid()}} on
             {{cycle.getStart()}}.
             <hr />
-            <p
-              style="
-                border: 3px;
-                border-style: solid;
-                border-color: #ff0000;
-                border-radius: 1vw;
-                padding: 1em;
-              "
+
+            <!-- Start confirmation modal -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-toggle="modal"
+              data-target="#start-semester-modal"
             >
-              Starting a new semester will delete all current information from
-              the database. There is no way to undo this. Please use with
-              tremendous caution. The classes will reset for the current
-              semester.
-            </p>
-            <form
-              action="start_new_semester"
-              method="post"
-              style="margin: 2px; padding: 2px"
+              Start new semester
+            </button>
+
+            <!-- Modal -->
+            <div
+              class="modal fade"
+              id="start-semester-modal"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="start-semester-modal-label"
+              aria-hidden="true"
             >
-              <!-- <select name="sem" id="sem">
-                <option value="fall">
-                  <p>Fall</p>
-                </option><option value="spring">
-                  <p>Spring</p>
-                </option><option value="summer">
-                  <p>Summer</p>
-                </option>
-              </select>
-              <select name="year" id="year">
-                <option value="2021">
-                  <p>2021</p>
-                </option><option value="2022">
-                  <p>2022</p>
-                </option><option value="2023">
-                  <p>2023</p>
-                </option>
-              </select> -->
-              <input type="submit" class="btn" value="Start" />
-            </form>
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="start-semester-modal-label">
+                      Are you sure?
+                    </h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <b
+                      >Before starting a new semester, make sure you've saved
+                      any metrics from this past semester.</b
+                    >
+                    <br /><br />
+                    <p>
+                      Starting a new semester will delete all current
+                      information from the database. There is no way to undo
+                      this. Please use with tremendous caution. The classes will
+                      reset for the current semester.
+                    </p>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <form
+                      action="start_new_semester"
+                      method="post"
+                      style="margin: 2px; padding: 2px"
+                    >
+                      <input
+                        type="submit"
+                        class="btn btn-primary"
+                        value="Confirm"
+                      />
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
