@@ -11,28 +11,44 @@
   </head>
   <body>
     {% include 'nav.html' %}
-    <div class=container>
+    <div class="container">
       <div class="row">
         <div class="col-4">
-          <div class=admin-boxes>
+          <div class="admin-boxes">
             <h5>TigerStudy Usage Statistics</h5>
-            <hr>
-            Number of Visitors Since Start: {{breakdown[0]}}<br>
-            Number of Study Groups Created: {{breakdown[1]}}<br>
-            Number of Students Participating in Study Groups: {{breakdown[2]}} <br>
+            <hr />
+            Number of Visitors Since Start: {{breakdown[0]}}<br />
+            Number of Study Groups Created: {{breakdown[1]}}<br />
+            Number of Students Participating in Study Groups: {{breakdown[2]}}
+            <br />
             See more metrics <a href="/admin_courses" target="_blank">here</a>.
           </div>
-          <br>
+          <br />
           <div class="admin-boxes">
             <h5>Semester Information</h5>
-            <hr>
-            The semester in progress was launched by {{cycle.getNetid()}} on {{cycle.getStart()}}.
-            <hr>
-            <p style = 'border:3px; border-style:solid; border-color:#FF0000; border-radius: 1vw;padding: 1em;'>
-              Starting a new semester will delete all current information from the database. There is no way to undo this. 
-              Please use with tremendous caution. The classes will reset for the current semester. 
+            <hr />
+            The semester in progress was launched by {{cycle.getNetid()}} on
+            {{cycle.getStart()}}.
+            <hr />
+            <p
+              style="
+                border: 3px;
+                border-style: solid;
+                border-color: #ff0000;
+                border-radius: 1vw;
+                padding: 1em;
+              "
+            >
+              Starting a new semester will delete all current information from
+              the database. There is no way to undo this. Please use with
+              tremendous caution. The classes will reset for the current
+              semester.
             </p>
-            <form action="start_new_semester" method='post' style="margin:2px; padding:2px">
+            <form
+              action="start_new_semester"
+              method="post"
+              style="margin: 2px; padding: 2px"
+            >
               <!-- <select name="sem" id="sem">
                 <option value="fall">
                   <p>Fall</p>
@@ -51,122 +67,135 @@
                   <p>2023</p>
                 </option>
               </select> -->
-              <input type="submit" class="btn" value="Start">
-            </form> 
+              <input type="submit" class="btn" value="Start" />
+            </form>
           </div>
         </div>
-        
+
         <div class="col-4">
           <div class="admin-boxes">
-            <strong>Add Admin:</strong><br>
+            <strong>Add Admin:</strong><br />
             <form action="edit_admin" method="get">
-                <label>Netid: </label>
-                <input type="text" name="netid">
-                <label>Receive admin emails: </label>
-                <input type="checkbox" name="email_list">
-                <input type="hidden" name="action" value="add_admin">
-                <br>
-                <input type="submit" class="btn" value="Add">
+              <label>Netid: </label>
+              <input type="text" name="netid" />
+              <label>Receive admin emails: </label>
+              <input type="checkbox" name="email_list" />
+              <input type="hidden" name="action" value="add_admin" />
+              <br />
+              <input type="submit" class="btn" value="Add" />
             </form>
 
-            {% if alert[0] != 'None' %}
-                {% if alert[0].getType() == 'danger' %}
-                  <div class="alert alert-danger" role="alert">
-                      {{alert[0].getMessage()}}
-                  </div>
-                {% else %}
-                  <div class="alert alert-success" role="alert">
-                      {{alert[0].getMessage()}}
-                  </div>
-                {% endif %}
-            {% endif %}
+            {% if alert[0] != 'None' %} {% if alert[0].getType() == 'danger' %}
+            <div class="alert alert-danger" role="alert">
+              {{alert[0].getMessage()}}
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+              {{alert[0].getMessage()}}
+            </div>
+            {% endif %} {% endif %}
           </div>
-          <br>
+          <br />
           <div class="admin-boxes">
-            <strong>Remove Admin</strong><br>
+            <strong>Remove Admin</strong><br />
             <form action="edit_admin" method="get">
-                <label>Netid: </label>
-                <input type="text" name="netid">
-                <input type="hidden" name="action" value="remove_admin">
-                <input type="submit" class="btn" value="Remove">
+              <label>Netid: </label>
+              <input type="text" name="netid" />
+              <input type="hidden" name="action" value="remove_admin" />
+              <input type="submit" class="btn" value="Remove" />
             </form>
 
-            {% if alert[1] != 'None' %}
-                {% if alert[1].getType() == 'danger' %}
-                    <div class="alert alert-danger" role="alert">
-                        {{alert[1].getMessage()}}
-                    </div>
-                {% else %}
-                    <div class="alert alert-success" role="alert">
-                        {{alert[1].getMessage()}}
-                    </div>
-                {% endif %}
-            {% endif %}
+            {% if alert[1] != 'None' %} {% if alert[1].getType() == 'danger' %}
+            <div class="alert alert-danger" role="alert">
+              {{alert[1].getMessage()}}
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+              {{alert[1].getMessage()}}
+            </div>
+            {% endif %} {% endif %}
           </div>
-          <br>
+          <br />
           <div class="admin-boxes">
-            <strong>Add Faculty:</strong><br>
+            <strong>Add Faculty:</strong><br />
             <form action="edit_admin" method="get">
-                <label>Netid: </label>
-                <input type="text" name="netid">
-                <input type="hidden" name="action" value="add_faculty">
-                <input type="submit" class="btn" value="Add">
+              <label>Netid: </label>
+              <input type="text" name="netid" />
+              <input type="hidden" name="action" value="add_faculty" />
+              <input type="submit" class="btn" value="Add" />
             </form>
 
-            {% if alert[2] != 'None' %}
-                {% if alert[2].getType() == 'danger' %}
-                  <div class="alert alert-danger" role="alert">
-                     {{alert[2].getMessage()}}
-                  </div>
-                {% else %}
-                  <div class="alert alert-success" role="alert">
-                      {{alert[2].getMessage()}}
-                  </div>
-                {% endif %}
-            {% endif %}
+            {% if alert[2] != 'None' %} {% if alert[2].getType() == 'danger' %}
+            <div class="alert alert-danger" role="alert">
+              {{alert[2].getMessage()}}
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+              {{alert[2].getMessage()}}
+            </div>
+            {% endif %} {% endif %}
           </div>
-          <br>
-          <div class="admin-boxes" >
-            <strong>Remove Faculty</strong><br>
+          <br />
+          <div class="admin-boxes">
+            <strong>Remove Faculty</strong><br />
             <form action="edit_admin" method="get">
-                <label>Netid: </label>
-                <input type="text" name="netid">
-                <input type="hidden" name="action" value="remove_faculty">
-                <input type="submit" class="btn" value="Remove">
+              <label>Netid: </label>
+              <input type="text" name="netid" />
+              <input type="hidden" name="action" value="remove_faculty" />
+              <input type="submit" class="btn" value="Remove" />
             </form>
 
-            {% if alert[3] != 'None' %}
-               {% if alert[3].getType() == 'danger' %}
-                    <div class="alert alert-danger" role="alert">
-                       {{alert[3].getMessage()}}
-                    </div>
-               {% else %}
-                   <div class="alert alert-success" role="alert">
-                        {{alert[3].getMessage()}}
-                   </div>
-                {% endif %}
-           {% endif %}
+            {% if alert[3] != 'None' %} {% if alert[3].getType() == 'danger' %}
+            <div class="alert alert-danger" role="alert">
+              {{alert[3].getMessage()}}
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+              {{alert[3].getMessage()}}
+            </div>
+            {% endif %} {% endif %}
           </div>
-          <br>
+          <br />
           <div class="admin-boxes email-admin-box">
             <h5>Edit Email Template</h5>
-            <hr>
+            <hr />
             <form action="/update_email_template" method="post">
               <div class="form-group">
                 <label for="email-type-selector">Select Email Type</label>
-                <select class="form-control" id="email-type-selector" name="type"></select>
+                <select
+                  class="form-control"
+                  id="email-type-selector"
+                  name="type"
+                ></select>
               </div>
               <div class="form-group">
                 <label for="email-subject-input">Email Subject</label>
-                <input class="form-control" id="email-subject-input" name="subject">
-                <small id="email-subject-help" class="form-text text-muted"></small>
+                <input
+                  class="form-control"
+                  id="email-subject-input"
+                  name="subject"
+                />
+                <small
+                  id="email-subject-help"
+                  class="form-text text-muted"
+                ></small>
               </div>
               <div class="form-group">
                 <label for="email-body-input">Email Body</label>
-                <textarea class="form-control" id="email-body-input" rows="15" name="body"></textarea>
-                <small id="email-body-help" class="form-text text-muted"></small>
+                <textarea
+                  class="form-control"
+                  id="email-body-input"
+                  rows="15"
+                  name="body"
+                ></textarea>
+                <small
+                  id="email-body-help"
+                  class="form-text text-muted"
+                ></small>
               </div>
-              <button type="submit" class="btn" id="email-submit" disabled>Save</button>
+              <button type="submit" class="btn" id="email-submit" disabled>
+                Save
+              </button>
             </form>
           </div>
         </div>
@@ -174,30 +203,26 @@
         <div class="col-4">
           <div class="admin-boxes">
             <h5>Current Admin</h5>
-            <hr>
-            {% for admin in curr_admin %}
-              {{admin}}<br>
+            <hr />
+            {% for admin in curr_admin %} {{admin}}<br />
             {% endfor %}
-            <br>
-            * denotes that this admin will receive an email whenever a student requests to join a course. To change an admin's email preference, remove and re-add them.
+            <br />
+            * denotes that this admin will receive an email whenever a student
+            requests to join a course. To change an admin's email preference,
+            remove and re-add them.
           </div>
-          <br>
+          <br />
           <div class="admin-boxes">
             <h5>Current Faculty Access</h5>
-            <hr>
-            {% for fac in curr_faculty %}
-              {{fac}}<br>
+            <hr />
+            {% for fac in curr_faculty %} {{fac}}<br />
             {% endfor %}
           </div>
         </div>
       </div>
     </div>
-    
 
-  {% include 'footer.html' %}
-  <script src="{{url_for('static', filename='admin.js')}}"></script>
+    {% include 'footer.html' %}
+    <script src="{{url_for('static', filename='admin.js')}}"></script>
   </body>
-
-  
-
 </html>
