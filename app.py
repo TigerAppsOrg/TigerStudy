@@ -282,7 +282,7 @@ def searchResults():
 
         if numgroups > 0:
             html += (
-                "<td> "
+                '<td style="vertical-align: middle"> '
                 + '<span class="badge badge-primary badge-pill" style="float:right">'
                 + str(numgroups)
                 + " group"
