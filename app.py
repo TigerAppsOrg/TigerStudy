@@ -3,7 +3,7 @@
 # Authors: Caroline di Vittorio and Kasey McFadden
 # -----------------------------------------------------------------------
 
-from flask import Flask, request, make_response, render_template, redirect
+from flask import Flask, jsonify, request, make_response, render_template, redirect
 from sys import argv
 from CASClient import CASClient
 from emails import *
@@ -521,7 +521,6 @@ def update_email_template():
 @app.route("/admin_courses")
 @login_required
 def admin_courses():
-    print("in admin courses")
     netid = NETID
     if not LOCAL:
         netid = cas.authenticate()
@@ -544,6 +543,48 @@ def admin_courses():
     )
     response = make_response(html)
     return response
+
+
+@app.route("/approve_all_dept_groups", methods=["POST"])
+def approve_all_dept_groups():
+    dept = request.form.get("dept", None)
+    if not dept:
+        return jsonify(success=False, error="Missing dept argument")
+
+    print(f"Approving all study groups in department {dept}")
+    approved_status = 2  # 2 means approved
+    note = ""  # can leave this as empty string
+
+    try:
+        all_dept_courses = list(getAllDeptCourses(dept))
+        print(all_dept_courses)
+        if all([e[2] == approved_status for e in all_dept_courses]):
+            print("here")
+            return jsonify(
+                success=False,
+                error=f"All study groups for department {dept} already approved",
+            )
+
+        num_courses = 0
+        num_groups = 0
+
+        for _, classnum, _, _, _ in all_dept_courses:
+            action = approveCourse(dept, classnum, approved_status, note)
+            num_courses += 1
+            if action is not None:
+                num_groups += len(action[1])
+                if not TESTING:
+                    emails = courseApprovedEmail(action[1], dept, classnum)
+                    for email in emails:
+                        sg.send(email)
+    except Exception as e:
+        print(
+            f"Failed to approve all study groups in department {dept} with exception:"
+        )
+        print(e)
+        return jsonify(success=False, error=str(e))
+
+    return jsonify(success=True, num_courses=num_courses, num_groups=num_groups)
 
 
 @app.route("/searchAdmin", methods=["GET"])

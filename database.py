@@ -295,6 +295,13 @@ def getMetrics():
     return groups_by_dept, dept_course_data
 
 
+def getAllDeptCourses(dept):
+    conn = db.connect()
+    stmt = classes.select().where(classes.c.dept == dept)
+    dept_courses = conn.execute(stmt)
+    return dept_courses
+
+
 def _getGroupData():
     conn = db.connect()
     stmt = classes.select()
