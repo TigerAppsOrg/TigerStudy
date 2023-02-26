@@ -311,8 +311,6 @@ def searchResults():
                 + str(course.getDept())
                 + '" data-num="'
                 + str(course.getNum())
-                + '" data-notes="'
-                + str(course.getNotes())
                 + '"<h6>Join</h6> </button>'
                 + " </td>\n</tr>\n"
             )
@@ -746,7 +744,7 @@ def submit_course_edits():
         endorse_status = 0
     else:
         endorse_status = 2
-    notes = request.args.get("notes")
+    notes = "" # leave this as empty string since it's not used anymore
 
     action = approveCourse(dept, classnum, endorse_status, notes)
     if action is not None:
