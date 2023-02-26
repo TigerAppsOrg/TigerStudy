@@ -800,10 +800,18 @@ def submit_course_edits():
                 for email in emails:
                     sg.send(email)
 
+    course = getCourse(dept, classnum)
+    group_overview = getGroupsInClass(dept, classnum)
+    groups = []
+    for g in group_overview:
+        groups.append([g, getStudentsInGroup(g.getGroupId())])
+
     html = render_template(
-        "admin_courses.html",
+        "admin_edit_course.html",
         netid=netid,
         isAdmin=isAdmin(netid),
+        course=course,
+        groups=groups,
     )
     response = make_response(html)
     return response
