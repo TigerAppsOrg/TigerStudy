@@ -310,10 +310,6 @@ def joinStudentToClass():
     dept = request.args.get("dept")
     num = request.args.get("classnum")
 
-    print("info passed along")
-    print(dept)
-    print(num)
-
     # if isStudentInClass(netid, dept, coursenum):
     #     html = '<br><div class="alert alert-danger" role="alert">' + \
     #            'You\'ve already joined a group for this class!</div>'
@@ -408,9 +404,7 @@ def edit_admin():
             return loginfail(True)
 
     admin_user = request.args.get("netid")
-    print("admin user " + str(admin_user))
     action_type = request.args.get("action")
-    print("action_type" + str(action_type))
 
     alert = []
     if action_type == "add_admin":
@@ -479,10 +473,6 @@ def update_email_template():
     if not (type_ and subject and body):
         return redirect("admin")
 
-    print(f"Updating email type: {type_}")
-    print(f"Subject: {subject}")
-    print(f"Body: {body}")
-
     updateEmailTemplate(type_, subject, body)
 
     return redirect("admin")
@@ -530,9 +520,7 @@ def approve_all_dept_groups():
 
     try:
         all_dept_courses = list(getAllDeptCourses(dept))
-        print(all_dept_courses)
         if all([e[2] == approved_status for e in all_dept_courses]):
-            print("here")
             return jsonify(
                 success=False,
                 error=f"All study groups for department {dept} already approved",
@@ -662,11 +650,6 @@ def admin_override():
     dept = request.form.get("dept")
     classnum = request.form.get("classnum")
 
-    print("Data that is passed yay!")
-    print(override_netid)
-    print(dept)
-    print(classnum)
-
     if override_type == "remove":
         groupid = request.form.get("groupid")
         removeStudentFromGroup(override_netid, groupid, dept, classnum)
@@ -760,7 +743,7 @@ def submit_course_edits():
         endorse_status = 0
     else:
         endorse_status = 2
-    notes = "" # leave this as empty string since it's not used anymore
+    notes = ""  # leave this as empty string since it's not used anymore
 
     action = approveCourse(dept, classnum, endorse_status, notes)
     if action is not None:
@@ -1026,7 +1009,6 @@ def getMyGroupInfo():
         for studentNetid in students:
             if str(studentNetid) != str(netid):
                 student = getStudentInformation(studentNetid)
-                print("studentInfo", student)
                 if student is not None:
                     html += (
                         "<tr>"
@@ -1128,7 +1110,6 @@ def changeGroup():
 @app.route("/editContact", methods=["POST"])
 @login_required
 def edit_contact():
-    print("here")
     netid = NETID
     if not LOCAL:
         netid = cas.authenticate()
