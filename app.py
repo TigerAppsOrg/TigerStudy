@@ -495,7 +495,7 @@ def admin_courses():
         useraccount = userAccount(netid, role)
         login_user(useraccount)
 
-    groups_by_dept, dept_course_data = getMetrics()
+    groups_by_dept, dept_course_data, entire_dept_approved = getMetrics()
 
     html = render_template(
         "admin_courses_new.html",
@@ -503,6 +503,7 @@ def admin_courses():
         isAdmin=isAdmin(netid),
         groups_by_dept=groups_by_dept,
         dept_course_data=dept_course_data,
+        entire_dept_approved=entire_dept_approved,
     )
     response = make_response(html)
     return response

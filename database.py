@@ -164,6 +164,15 @@ def getAdmin():
 def getMetrics():
     all_classes, all_group_info, all_group_assignment = _getGroupData()
 
+    all_classes = list(all_classes)
+
+    # precompute whether or not all courses in a dept are approved
+    entire_dept_approved = {}
+    for row in all_classes:
+        dept, approval_status = row[0], row[2]
+        approved = entire_dept_approved.get(dept, True)
+        entire_dept_approved[dept] = approved and approval_status == 2
+
     groups_by_id = {}  # key is groupid, value is list of netids
     for row in all_group_assignment:
         assignment_row = GroupAssignment(row)
@@ -292,7 +301,7 @@ def getMetrics():
     # sort by depts in alphabetical order
     groups_by_dept = dict(sorted(groups_by_dept.items()))
 
-    return groups_by_dept, dept_course_data
+    return groups_by_dept, dept_course_data, entire_dept_approved
 
 
 def getAllDeptCourses(dept):

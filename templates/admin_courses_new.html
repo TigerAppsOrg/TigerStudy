@@ -133,8 +133,9 @@
             <form action="javascript:void(0);"
                   onsubmit="setupApproveAllDeptGroupsBtns('{{dept}}');">
               <button class="btn edit-course-btn"
-                      type="submit">
-                Approve All {{dept}} Groups
+                      type="submit"
+                      {% if entire_dept_approved[dept] %} disabled {% endif %}>
+                Approve All {{dept}} Courses
               </button>
             </form>
           </div>
