@@ -529,6 +529,7 @@ def approve_all_dept_groups():
 
         num_courses = 0
         num_groups = 0
+        num_emails = 0
 
         for _, classnum, _, _, _ in all_dept_courses:
             print(f"Approving {dept} {classnum}")
@@ -540,6 +541,7 @@ def approve_all_dept_groups():
                     emails = courseApprovedEmail(action[1], dept, classnum)
                     for email in emails:
                         sg.send(email)
+                        num_emails += 1
     except Exception as e:
         print(
             f"Failed to approve all study groups in department {dept} with exception:"
@@ -547,7 +549,12 @@ def approve_all_dept_groups():
         print(e)
         return jsonify(success=False, error=str(e))
 
-    return jsonify(success=True, num_courses=num_courses, num_groups=num_groups)
+    return jsonify(
+        success=True,
+        num_courses=num_courses,
+        num_groups=num_groups,
+        num_emails=num_emails,
+    )
 
 
 @app.route("/searchAdmin", methods=["GET"])

@@ -96,7 +96,7 @@ setupApproveAllDeptGroupsBtns = (btn, dept) => {
       }
 
       alert(
-        `Successfully approved all ${res.num_courses} courses in department ${dept}. All students in ${res.num_groups} pending study groups for these courses were notified via email.`
+        `Successfully approved all ${res.num_courses} courses in department ${dept}. All students in ${res.num_groups} pending study groups for these courses were notified via email. ${res.num_emails} emails were sent.`
       );
     })
     .catch(() => {
