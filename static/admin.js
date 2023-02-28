@@ -96,7 +96,9 @@ setupApproveAllDeptGroupsBtns = (dept) => {
       );
     })
     .catch(() => {
-      alert(`Failed to approve all courses in department ${dept}.`);
+      alert(
+        `Failed to approve all courses in department ${dept}. Students in study groups were not notified.`
+      );
     });
 };
 

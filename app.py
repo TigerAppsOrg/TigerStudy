@@ -523,7 +523,7 @@ def approve_all_dept_groups():
         if all([e[2] == approved_status for e in all_dept_courses]):
             return jsonify(
                 success=False,
-                error=f"All study groups for department {dept} already approved",
+                error=f"All study groups for department {dept} already approved. No further action is needed",
             )
 
         num_courses = 0
