@@ -131,7 +131,7 @@
           </div>
           <div class="col-md-3 p-0 d-flex justify-content-end">
             <form action="javascript:void(0);"
-                  onsubmit="setupApproveAllDeptGroupsBtns('{{dept}}');">
+                  onsubmit="setupApproveAllDeptGroupsBtns(this, '{{dept}}');">
               <button class="btn edit-course-btn"
                       type="submit"
                       {% if entire_dept_approved[dept] %} disabled {% endif %}>

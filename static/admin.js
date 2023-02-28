@@ -81,13 +81,17 @@ setupEmailTemplateForm = () => {
   });
 };
 
-setupApproveAllDeptGroupsBtns = (dept) => {
+setupApproveAllDeptGroupsBtns = (btn, dept) => {
+  approveAllButton = $(btn).children()[0];
+  approveAllButton.disabled = true;
+
   $.post("/approve_all_dept_groups", { dept })
     .then((res) => {
       if (!res.success) {
         alert(
           `Failed to approve all courses in department ${dept} with error: "${res.error}".`
         );
+        approveAllButton.disabled = false;
         return;
       }
 
@@ -99,6 +103,7 @@ setupApproveAllDeptGroupsBtns = (dept) => {
       alert(
         `Failed to approve all courses in department ${dept}. Students in study groups were not notified.`
       );
+      approveAllButton.disabled = false;
     });
 };
 
