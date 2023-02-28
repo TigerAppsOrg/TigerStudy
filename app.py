@@ -531,9 +531,10 @@ def approve_all_dept_groups():
         num_groups = 0
 
         for _, classnum, _, _, _ in all_dept_courses:
+            print(f"Approving {dept} {classnum}")
             action = approveCourse(dept, classnum, approved_status, note)
             num_courses += 1
-            if action is not None:
+            if action:
                 num_groups += len(action[1])
                 if not TESTING:
                     emails = courseApprovedEmail(action[1], dept, classnum)
