@@ -81,6 +81,32 @@ setupEmailTemplateForm = () => {
   });
 };
 
+setupApproveAllDeptGroupsBtns = (btn, dept) => {
+  approveAllButton = $(btn).children()[0];
+  approveAllButton.disabled = true;
+
+  $.post("/approve_all_dept_groups", { dept })
+    .then((res) => {
+      if (!res.success) {
+        alert(
+          `Failed to approve all courses in department ${dept} with error: "${res.error}".`
+        );
+        approveAllButton.disabled = false;
+        return;
+      }
+
+      alert(
+        `Successfully approved all ${res.num_courses} courses in department ${dept}. All students in ${res.num_groups} pending study groups for these courses were notified via email. ${res.num_emails} emails were sent.`
+      );
+    })
+    .catch(() => {
+      alert(
+        `Failed to approve all courses in department ${dept}. Students in study groups were not notified.`
+      );
+      approveAllButton.disabled = false;
+    });
+};
+
 $(document).ready(() => {
   setupEmailTemplateForm();
 });

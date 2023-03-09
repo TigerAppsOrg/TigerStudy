@@ -3,7 +3,7 @@
 # Authors: Caroline di Vittorio and Kasey McFadden
 # -----------------------------------------------------------------------
 
-from flask import Flask, request, make_response, render_template, redirect
+from flask import Flask, jsonify, request, make_response, render_template, redirect
 from sys import argv
 from CASClient import CASClient
 from emails import *
@@ -310,10 +310,6 @@ def joinStudentToClass():
     dept = request.args.get("dept")
     num = request.args.get("classnum")
 
-    print("info passed along")
-    print(dept)
-    print(num)
-
     # if isStudentInClass(netid, dept, coursenum):
     #     html = '<br><div class="alert alert-danger" role="alert">' + \
     #            'You\'ve already joined a group for this class!</div>'
@@ -408,9 +404,7 @@ def edit_admin():
             return loginfail(True)
 
     admin_user = request.args.get("netid")
-    print("admin user " + str(admin_user))
     action_type = request.args.get("action")
-    print("action_type" + str(action_type))
 
     alert = []
     if action_type == "add_admin":
@@ -479,10 +473,6 @@ def update_email_template():
     if not (type_ and subject and body):
         return redirect("admin")
 
-    print(f"Updating email type: {type_}")
-    print(f"Subject: {subject}")
-    print(f"Body: {body}")
-
     updateEmailTemplate(type_, subject, body)
 
     return redirect("admin")
@@ -494,7 +484,6 @@ def update_email_template():
 @app.route("/admin_courses")
 @login_required
 def admin_courses():
-    print("in admin courses")
     netid = NETID
     if not LOCAL:
         netid = cas.authenticate()
@@ -506,7 +495,7 @@ def admin_courses():
         useraccount = userAccount(netid, role)
         login_user(useraccount)
 
-    groups_by_dept, dept_course_data = getMetrics()
+    groups_by_dept, dept_course_data, entire_dept_approved = getMetrics()
 
     html = render_template(
         "admin_courses_new.html",
@@ -514,9 +503,58 @@ def admin_courses():
         isAdmin=isAdmin(netid),
         groups_by_dept=groups_by_dept,
         dept_course_data=dept_course_data,
+        entire_dept_approved=entire_dept_approved,
     )
     response = make_response(html)
     return response
+
+
+@app.route("/approve_all_dept_groups", methods=["POST"])
+def approve_all_dept_groups():
+    dept = request.form.get("dept", None)
+    if not dept:
+        return jsonify(success=False, error="Missing dept argument")
+
+    print(f"Approving all study groups in department {dept}")
+    approved_status = 2  # 2 means approved
+    note = ""  # can leave this as empty string
+
+    try:
+        all_dept_courses = list(getAllDeptCourses(dept))
+        if all([e[2] == approved_status for e in all_dept_courses]):
+            return jsonify(
+                success=False,
+                error=f"All study groups for department {dept} already approved. No further action is needed",
+            )
+
+        num_courses = 0
+        num_groups = 0
+        num_emails = 0
+
+        for _, classnum, _, _, _ in all_dept_courses:
+            print(f"Approving {dept} {classnum}")
+            action = approveCourse(dept, classnum, approved_status, note)
+            num_courses += 1
+            if action:
+                num_groups += len(action[1])
+                if not TESTING:
+                    emails = courseApprovedEmail(action[1], dept, classnum)
+                    for email in emails:
+                        sg.send(email)
+                        num_emails += 1
+    except Exception as e:
+        print(
+            f"Failed to approve all study groups in department {dept} with exception:"
+        )
+        print(e)
+        return jsonify(success=False, error=str(e))
+
+    return jsonify(
+        success=True,
+        num_courses=num_courses,
+        num_groups=num_groups,
+        num_emails=num_emails,
+    )
 
 
 @app.route("/searchAdmin", methods=["GET"])
@@ -621,11 +659,6 @@ def admin_override():
     dept = request.form.get("dept")
     classnum = request.form.get("classnum")
 
-    print("Data that is passed yay!")
-    print(override_netid)
-    print(dept)
-    print(classnum)
-
     if override_type == "remove":
         groupid = request.form.get("groupid")
         removeStudentFromGroup(override_netid, groupid, dept, classnum)
@@ -719,7 +752,7 @@ def submit_course_edits():
         endorse_status = 0
     else:
         endorse_status = 2
-    notes = "" # leave this as empty string since it's not used anymore
+    notes = ""  # leave this as empty string since it's not used anymore
 
     action = approveCourse(dept, classnum, endorse_status, notes)
     if action is not None:
@@ -732,10 +765,18 @@ def submit_course_edits():
                 for email in emails:
                     sg.send(email)
 
+    course = getCourse(dept, classnum)
+    group_overview = getGroupsInClass(dept, classnum)
+    groups = []
+    for g in group_overview:
+        groups.append([g, getStudentsInGroup(g.getGroupId())])
+
     html = render_template(
-        "admin_courses.html",
+        "admin_edit_course.html",
         netid=netid,
         isAdmin=isAdmin(netid),
+        course=course,
+        groups=groups,
     )
     response = make_response(html)
     return response
@@ -977,7 +1018,6 @@ def getMyGroupInfo():
         for studentNetid in students:
             if str(studentNetid) != str(netid):
                 student = getStudentInformation(studentNetid)
-                print("studentInfo", student)
                 if student is not None:
                     html += (
                         "<tr>"
@@ -1079,7 +1119,6 @@ def changeGroup():
 @app.route("/editContact", methods=["POST"])
 @login_required
 def edit_contact():
-    print("here")
     netid = NETID
     if not LOCAL:
         netid = cas.authenticate()
